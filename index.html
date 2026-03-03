@@ -119,7 +119,6 @@
 <body>
 <div id="app">
   <header>
-    <div class="logo">AutoCTI <span>/ Admin</span></div>
     <div class="header-right">
       <div class="status-indicator">
         <span class="status-dot" id="status-dot"></span>
@@ -199,7 +198,7 @@ async function loadFromGitHub(){
       if(!res.ok)continue;
       runs[fp.split('/').pop()]=parseCSV(await res.text());
     }
-    populateRunSelect();setDot('ok',`${csvFiles.length} run(s) loaded`);
+    populateRunSelect();setDot('ok',`__`);
   }catch(err){showError(err.message);setDot('err','error');}
   btn.classList.remove('spinning');
 }
