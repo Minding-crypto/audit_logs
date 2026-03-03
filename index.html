@@ -4,647 +4,348 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AutoCTI — Admin Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #0a0c0f;
-    --surface: #111418;
-    --surface2: #181c22;
-    --border: #1e2530;
-    --accent: #00e5ff;
-    --accent2: #ff6b35;
-    --kept: #00c896;
-    --rejected: #ff4757;
-    --text: #e8edf5;
-    --muted: #5a6478;
-    --mono: 'Space Mono', monospace;
-    --sans: 'Syne', sans-serif;
+    --bg: #ffffff;
+    --surface: #f7f7f7;
+    --surface2: #efefef;
+    --border: #e0e0e0;
+    --border2: #c8c8c8;
+    --text: #111111;
+    --text2: #444444;
+    --muted: #888888;
+    --muted2: #bbbbbb;
+    --font: 'IBM Plex Mono', monospace;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none; z-index: 0;
-  }
-  #app { position: relative; z-index: 1; }
-
-  /* HEADER */
-  header {
-    border-bottom: 1px solid var(--border);
-    padding: 16px 36px;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(10,12,15,0.9);
-    backdrop-filter: blur(12px);
-    position: sticky; top: 0; z-index: 100;
-    gap: 16px; flex-wrap: wrap;
-  }
-  .logo { display: flex; align-items: center; gap: 14px; }
-  .logo-icon {
-    width: 32px; height: 32px; background: var(--accent);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  }
-  .logo-icon::after {
-    content: ''; width: 14px; height: 14px; background: var(--bg);
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  }
-  .logo-text { font-size: 17px; font-weight: 800; letter-spacing: -0.5px; }
-  .logo-text span { color: var(--accent); }
-
-  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .run-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .run-select {
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text); font-family: var(--mono); font-size: 12px;
-    padding: 7px 12px; border-radius: 4px; cursor: pointer; outline: none; min-width: 200px;
-  }
-  .run-select:focus { border-color: var(--accent); }
-
-  .refresh-btn {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--muted); font-family: var(--mono); font-size: 11px;
-    padding: 7px 14px; border-radius: 4px; cursor: pointer;
-    text-transform: uppercase; letter-spacing: 0.5px;
-    transition: all 0.15s; display: flex; align-items: center; gap: 6px;
-  }
-  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .refresh-btn.spinning .spin-icon { animation: spin 1s linear infinite; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 13px; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+  header { border-bottom: 1px solid var(--border); padding: 0 36px; height: 52px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); position: sticky; top: 0; z-index: 100; gap: 16px; }
+  .logo { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .logo span { color: var(--muted); font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+  .run-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .run-select { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 6px 28px 6px 10px; cursor: pointer; outline: none; min-width: 210px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+  .run-select:focus { border-color: var(--text); outline: none; }
+  .refresh-btn { background: var(--text); color: var(--bg); border: none; font-family: var(--font); font-size: 11px; font-weight: 500; padding: 6px 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: opacity 0.15s; display: flex; align-items: center; gap: 6px; }
+  .refresh-btn:hover { opacity: 0.7; }
+  .refresh-btn.spinning .spin-icon { animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .spin-icon { display: inline-block; }
-
-  .status-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--muted); display: inline-block; margin-right: 4px;
-    transition: background 0.3s;
-  }
-  .status-dot.ok { background: var(--kept); box-shadow: 0 0 6px var(--kept); }
-  .status-dot.err { background: var(--rejected); }
-  .status-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-  /* LOADING / ERROR STATE */
-  #loading-state {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: calc(100vh - 65px); text-align: center; padding: 40px;
-    animation: fadeIn 0.4s ease;
-  }
-  .loading-spinner {
-    width: 48px; height: 48px; border: 3px solid var(--border);
-    border-top-color: var(--accent); border-radius: 50%;
-    animation: spin 0.8s linear infinite; margin-bottom: 24px;
-  }
-  .loading-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-  .loading-sub { color: var(--muted); font-family: var(--mono); font-size: 12px; line-height: 1.8; }
-  .error-icon { font-size: 48px; margin-bottom: 20px; }
-  .retry-btn {
-    margin-top: 24px; background: var(--accent); color: var(--bg);
-    border: none; padding: 10px 24px; border-radius: 4px;
-    font-family: var(--sans); font-weight: 700; font-size: 14px;
-    cursor: pointer; transition: opacity 0.2s;
-  }
-  .retry-btn:hover { opacity: 0.85; }
-
-  /* DASHBOARD */
-  #dashboard { display: none; padding: 28px 36px; max-width: 1600px; margin: 0 auto; animation: fadeIn 0.5s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-  /* STATS */
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
-  .stat-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 18px; position: relative; overflow: hidden;
-    animation: fadeIn 0.5s ease both;
-  }
-  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-  .stat-card.green::before { background: var(--kept); }
-  .stat-card.red::before { background: var(--rejected); }
-  .stat-card.blue::before { background: var(--accent); }
-  .stat-card.orange::before { background: var(--accent2); }
-  .stat-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-  .stat-value { font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-  .stat-card.green .stat-value { color: var(--kept); }
-  .stat-card.red .stat-value { color: var(--rejected); }
-  .stat-card.blue .stat-value { color: var(--accent); }
-  .stat-card.orange .stat-value { color: var(--accent2); }
-  .stat-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); }
-
-  /* PANELS */
-  .section-title {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 2px; color: var(--muted); margin-bottom: 14px;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 24px; }
-  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 22px; }
-
-  /* FUNNEL */
-  .funnel-stages { display: flex; flex-direction: column; gap: 10px; }
-  .funnel-row { display: flex; flex-direction: column; gap: 4px; }
-  .funnel-meta { display: flex; justify-content: space-between; align-items: center; }
-  .funnel-name { font-family: var(--mono); color: var(--text); font-size: 11px; }
-  .funnel-count { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); }
-  .funnel-bar-bg { height: 7px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
-  .funnel-bar-fill { height: 100%; border-radius: 4px; background: var(--rejected); transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1); width: 0; }
-  .funnel-bar-fill.kept { background: var(--kept); }
-
-  /* SOURCES */
-  .source-list { display: flex; flex-direction: column; gap: 8px; }
-  .source-row { display: grid; grid-template-columns: 170px 1fr 55px; align-items: center; gap: 10px; }
-  .source-name { font-family: var(--mono); color: var(--text); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .source-bar-bg { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-  .source-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); transition: width 0.8s cubic-bezier(0.25,1,0.5,1); width: 0; }
-  .source-count { font-family: var(--mono); font-size: 11px; color: var(--muted); text-align: right; }
-
-  /* TABLE */
-  .table-section { margin-bottom: 28px; }
+  .status-indicator { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted2); flex-shrink: 0; }
+  .status-dot.ok { background: var(--text); }
+  .status-dot.err { background: var(--muted); }
+  .status-dot.loading { animation: blink 1s infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
+  #loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 52px); text-align: center; padding: 40px; }
+  .loading-spinner { width: 24px; height: 24px; border: 1px solid var(--border2); border-top-color: var(--text); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; }
+  .loading-title { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+  .loading-sub { font-size: 12px; color: var(--muted); line-height: 1.8; }
+  .retry-btn { margin-top: 20px; background: var(--text); color: var(--bg); border: none; padding: 8px 20px; font-family: var(--font); font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; }
+  .retry-btn:hover { opacity: 0.7; }
+  #dashboard { display: none; padding: 32px 36px; max-width: 1400px; margin: 0 auto; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); margin-bottom: 40px; }
+  .stat-card { padding: 24px 28px; border-right: 1px solid var(--border); }
+  .stat-card:last-child { border-right: none; }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; }
+  .stat-value { font-size: 40px; font-weight: 300; line-height: 1; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .stat-sub { font-size: 11px; color: var(--muted); }
+  .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+  .funnel-stages { display: flex; flex-direction: column; gap: 12px; }
+  .funnel-row { display: flex; flex-direction: column; gap: 5px; }
+  .funnel-meta { display: flex; justify-content: space-between; font-size: 11px; }
+  .funnel-name { color: var(--text2); }
+  .funnel-count { color: var(--muted); font-weight: 500; }
+  .funnel-bar-bg { height: 3px; background: var(--surface2); }
+  .funnel-bar-fill { height: 100%; background: var(--text); transition: width 0.7s cubic-bezier(0.25,1,0.5,1); width: 0; }
+  .funnel-bar-fill.dim { background: var(--muted2); }
+  .source-list { display: flex; flex-direction: column; gap: 10px; }
+  .source-row { display: grid; grid-template-columns: 180px 1fr 40px; align-items: center; gap: 12px; }
+  .source-name { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .source-bar-bg { height: 2px; background: var(--surface2); }
+  .source-bar-fill { height: 100%; background: var(--text); transition: width 0.7s cubic-bezier(0.25,1,0.5,1); width: 0; }
+  .source-count { font-size: 11px; color: var(--muted); text-align: right; }
+  .table-section { margin-bottom: 40px; }
   .table-toolbar { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
-  .search-box {
-    background: var(--surface); border: 1px solid var(--border);
-    color: var(--text); font-family: var(--mono); font-size: 12px;
-    padding: 8px 14px; border-radius: 4px; outline: none; flex: 1; min-width: 200px;
-    transition: border-color 0.2s;
-  }
-  .search-box::placeholder { color: var(--muted); }
-  .search-box:focus { border-color: var(--accent); }
-  .filter-btn {
-    background: var(--surface2); border: 1px solid var(--border); color: var(--muted);
-    font-family: var(--mono); font-size: 11px; padding: 8px 14px; border-radius: 4px;
-    cursor: pointer; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px;
-    transition: all 0.15s;
-  }
-  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 700; }
-
-  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .search-box { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 7px 12px; outline: none; flex: 1; min-width: 200px; }
+  .search-box::placeholder { color: var(--muted2); }
+  .search-box:focus { border-color: var(--text); }
+  .filter-btn { background: var(--bg); border: 1px solid var(--border2); color: var(--muted); font-family: var(--font); font-size: 11px; padding: 7px 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.06em; transition: all 0.1s; }
+  .filter-btn:hover { border-color: var(--text); color: var(--text); }
+  .filter-btn.active { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .table-wrap { border: 1px solid var(--border); overflow: hidden; }
   table { width: 100%; border-collapse: collapse; }
-  thead th {
-    background: var(--surface2); font-family: var(--mono); font-size: 10px;
-    text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted);
-    padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border);
-    cursor: pointer; user-select: none; white-space: nowrap;
-  }
-  thead th:hover { color: var(--accent); }
+  thead th { background: var(--surface); font-family: var(--font); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; font-weight: 400; }
+  thead th:hover { color: var(--text); }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  tbody tr:hover { background: var(--surface2); }
+  tbody tr:hover { background: var(--surface); }
   tbody tr:last-child { border-bottom: none; }
-  td { padding: 11px 14px; font-size: 13px; vertical-align: middle; }
-
-  .badge { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-  .badge-kept { background: rgba(0,200,150,0.15); color: var(--kept); border: 1px solid rgba(0,200,150,0.3); }
-  .badge-rejected { background: rgba(255,71,87,0.12); color: var(--rejected); border: 1px solid rgba(255,71,87,0.25); }
-  .badge-seen { background: rgba(90,100,120,0.2); color: var(--muted); border: 1px solid var(--border); }
-
-  .reason-tag { display: inline-block; font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 3px; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); white-space: nowrap; }
-  .reason-tag.llm { color: #b39ddb; border-color: #5c4d8a; background: rgba(179,157,219,0.08); }
-  .reason-tag.dedup { color: #80cbc4; border-color: #4a8a86; background: rgba(128,203,196,0.08); }
-  .reason-tag.junk { color: #ffb74d; border-color: #8a6020; background: rgba(255,183,77,0.08); }
-  .reason-tag.keyword { color: #ef9a9a; border-color: #8a3535; background: rgba(239,154,154,0.08); }
-  .reason-tag.old { color: var(--muted); border-color: var(--border); }
-
-  .title-cell { max-width: 340px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .title-cell a { color: var(--text); text-decoration: none; transition: color 0.15s; }
-  .title-cell a:hover { color: var(--accent); }
-  .source-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
-
-  .pagination { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; border-top: 1px solid var(--border); background: var(--surface2); }
-  .page-info { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-  .page-btns { display: flex; gap: 5px; }
-  .page-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: var(--mono); font-size: 11px; padding: 5px 11px; border-radius: 3px; cursor: pointer; transition: all 0.15s; }
-  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .page-btn:disabled { opacity: 0.35; cursor: default; }
-  .page-btn.current { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 700; }
-
-  .empty-row td { text-align: center; padding: 40px; color: var(--muted); font-family: var(--mono); font-size: 13px; }
-
-  @media (max-width: 900px) {
-    header { padding: 14px 18px; }
-    #dashboard { padding: 18px; }
-    .two-col { grid-template-columns: 1fr; }
-    .source-row { grid-template-columns: 120px 1fr 45px; }
+  td { padding: 10px 14px; font-size: 12px; vertical-align: middle; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; border: 1px solid; }
+  .badge-kept { color: var(--text); border-color: var(--text); }
+  .badge-rejected { color: var(--muted); border-color: var(--border2); }
+  .badge-seen { color: var(--muted2); border-color: var(--border); }
+  .reason-tag { display: inline-block; font-size: 10px; padding: 2px 7px; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); white-space: nowrap; }
+  .stage-tag { font-size: 10px; color: var(--muted); }
+  .title-cell { max-width: 360px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .title-cell a { color: var(--text2); text-decoration: none; }
+  .title-cell a:hover { color: var(--text); text-decoration: underline; }
+  .source-tag { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  .pagination { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface); }
+  .page-info { font-size: 11px; color: var(--muted); }
+  .page-btns { display: flex; gap: 4px; }
+  .page-btn { background: var(--bg); border: 1px solid var(--border2); color: var(--muted); font-family: var(--font); font-size: 11px; padding: 4px 10px; cursor: pointer; transition: all 0.1s; }
+  .page-btn:hover:not(:disabled) { border-color: var(--text); color: var(--text); }
+  .page-btn:disabled { opacity: 0.3; cursor: default; }
+  .page-btn.current { background: var(--text); border-color: var(--text); color: var(--bg); }
+  .empty-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 12px; }
+  @media (max-width: 960px) {
+    header { padding: 0 18px; }
+    #dashboard { padding: 24px 18px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .stat-card:nth-child(2) { border-right: none; }
+    .stat-card:nth-child(3), .stat-card:nth-child(4) { border-top: 1px solid var(--border); }
+    .two-col { grid-template-columns: 1fr; gap: 24px; }
+    .source-row { grid-template-columns: 130px 1fr 35px; }
   }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); }
 </style>
 </head>
 <body>
 <div id="app">
-
   <header>
-    <div class="logo">
-      <div class="logo-icon"></div>
-      <div class="logo-text">Auto<span>CTI</span> Dashboard</div>
-    </div>
+    <div class="logo">AutoCTI <span>/ Admin</span></div>
     <div class="header-right">
-      <span><span class="status-dot" id="status-dot"></span><span id="status-text" style="font-family:var(--mono);font-size:11px;color:var(--muted)">connecting…</span></span>
+      <div class="status-indicator">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">connecting</span>
+      </div>
       <span class="run-label">Run</span>
-      <select class="run-select" id="run-select" onchange="switchRun(this.value)">
-        <option>loading…</option>
-      </select>
+      <select class="run-select" id="run-select" onchange="switchRun(this.value)"><option>loading...</option></select>
       <button class="refresh-btn" id="refresh-btn" onclick="loadFromGitHub()">
-        <span class="spin-icon">↻</span> Refresh
+        <span class="spin-icon">&#8635;</span> Refresh
       </button>
     </div>
   </header>
-
   <div id="loading-state">
     <div class="loading-spinner"></div>
-    <div class="loading-title">Fetching audit logs…</div>
+    <div class="loading-title">Fetching audit logs</div>
     <div class="loading-sub" id="loading-sub">Connecting to GitHub</div>
   </div>
-
   <div id="dashboard">
     <div class="stats-row" id="stats-row"></div>
     <div class="two-col">
-      <div class="panel">
-        <div class="section-title">Pipeline Funnel</div>
+      <div>
+        <div class="section-label">Pipeline Funnel</div>
         <div class="funnel-stages" id="funnel"></div>
       </div>
-      <div class="panel">
-        <div class="section-title">Articles by Source</div>
+      <div>
+        <div class="section-label">Articles by Source</div>
         <div class="source-list" id="source-list"></div>
       </div>
     </div>
     <div class="table-section">
-      <div class="section-title">All Articles</div>
+      <div class="section-label">All Articles</div>
       <div class="table-toolbar">
-        <input class="search-box" type="text" id="search" placeholder="Search title, source, reason…" oninput="applyFilters()" />
+        <input class="search-box" type="text" id="search" placeholder="Search title, source, reason..." oninput="applyFilters()" />
         <button class="filter-btn active" onclick="setStatus('all', this)">All</button>
-        <button class="filter-btn" onclick="setStatus('KEPT', this)">✓ Kept</button>
-        <button class="filter-btn" onclick="setStatus('REJECTED', this)">✗ Rejected</button>
+        <button class="filter-btn" onclick="setStatus('KEPT', this)">Kept</button>
+        <button class="filter-btn" onclick="setStatus('REJECTED', this)">Rejected</button>
         <button class="filter-btn" onclick="setStatus('seen', this)">Seen</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th onclick="sortBy('status')">Status</th>
-              <th onclick="sortBy('stage')">Stage</th>
-              <th onclick="sortBy('title')">Title</th>
-              <th onclick="sortBy('source')">Source</th>
-              <th onclick="sortBy('reason')">Reason</th>
-            </tr>
-          </thead>
+          <thead><tr>
+            <th onclick="sortBy('status')">Status</th>
+            <th onclick="sortBy('stage')">Stage</th>
+            <th onclick="sortBy('title')">Title</th>
+            <th onclick="sortBy('source')">Source</th>
+            <th onclick="sortBy('reason')">Reason</th>
+          </tr></thead>
           <tbody id="table-body"></tbody>
         </table>
         <div class="pagination" id="pagination"></div>
       </div>
     </div>
   </div>
-
 </div>
 <script>
-// ── CONFIG — your GitHub repo ──────────────────────────────────────────
-const GITHUB_USER = 'Minding-crypto';
-const GITHUB_REPO = 'audit_logs';
-const GITHUB_BRANCH = 'main';
-// Files in root of the repo. Change to 'data/' if you push CSVs into a subfolder.
-const GITHUB_PATH = '';
+const GITHUB_USER='Minding-crypto',GITHUB_REPO='audit_logs',GITHUB_BRANCH='main';
+let runs={},currentRows=[],filteredRows=[],statusFilter='all',sortCol='status',sortDir=1,page=1;
+const PAGE_SIZE=50;
+const API_BASE=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}`;
+const RAW_BASE=`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/`;
 
-// ── STATE ─────────────────────────────────────────────────────────────
-let runs = {};
-let currentRun = null;
-let currentRows = [];
-let filteredRows = [];
-let statusFilter = 'all';
-let sortCol = 'status';
-let sortDir = 1;
-let page = 1;
-const PAGE_SIZE = 50;
+function setDot(cls,text){document.getElementById('status-dot').className='status-dot '+cls;document.getElementById('status-text').textContent=text;}
 
-// ── GITHUB FETCHING ───────────────────────────────────────────────────
-const API_BASE = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}`;
-const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/`;
-
-function setStatus_(dot, text, cls) {
-  document.getElementById('status-dot').className = `status-dot ${cls}`;
-  document.getElementById('status-text').textContent = text;
-}
-
-async function loadFromGitHub() {
-  const btn = document.getElementById('refresh-btn');
-  btn.classList.add('spinning');
-  setStatus_('', 'fetching…', 'loading');
-  document.getElementById('loading-sub').textContent = 'Listing files in repo…';
-
-  showLoading();
-
-  try {
-    // 1. List files in repo root (or subfolder)
-    const treeUrl = `${API_BASE}/git/trees/${GITHUB_BRANCH}?recursive=1`;
-    const treeRes = await fetch(treeUrl);
-    if (!treeRes.ok) throw new Error(`GitHub API error ${treeRes.status} — is the repo public?`);
-    const tree = await treeRes.json();
-
-    const csvFiles = tree.tree
-      .filter(f => f.type === 'blob' && f.path.endsWith('.csv') && f.path.includes('audit_'))
-      .map(f => f.path)
-      .sort()
-      .reverse(); // newest first
-
-    if (!csvFiles.length) throw new Error('No audit_*.csv files found in the repo yet.\nPush at least one CSV from your server first.');
-
-    document.getElementById('loading-sub').textContent = `Found ${csvFiles.length} audit file(s) — loading…`;
-
-    // 2. Fetch each CSV
-    runs = {};
-    for (const filePath of csvFiles) {
-      const rawUrl = RAW_BASE + filePath;
-      const res = await fetch(rawUrl + '?t=' + Date.now()); // bust cache
-      if (!res.ok) continue;
-      const text = await res.text();
-      const rows = parseCSV(text);
-      const label = filePath.split('/').pop(); // just the filename
-      runs[label] = rows;
+async function loadFromGitHub(){
+  const btn=document.getElementById('refresh-btn');
+  btn.classList.add('spinning');setDot('loading','fetching');showLoading('Listing files in repo');
+  try{
+    const r=await fetch(`${API_BASE}/git/trees/${GITHUB_BRANCH}?recursive=1`);
+    if(!r.ok)throw new Error(`GitHub API ${r.status} - is the repo public?`);
+    const tree=await r.json();
+    const csvFiles=tree.tree.filter(f=>f.type==='blob'&&f.path.endsWith('.csv')&&f.path.includes('audit_')).map(f=>f.path).sort().reverse();
+    if(!csvFiles.length)throw new Error('No audit_*.csv files found yet.\nPush at least one CSV from the server first.');
+    showLoading(`Found ${csvFiles.length} file(s) - loading`);
+    runs={};
+    for(const fp of csvFiles){
+      const res=await fetch(RAW_BASE+fp+'?t='+Date.now());
+      if(!res.ok)continue;
+      runs[fp.split('/').pop()]=parseCSV(await res.text());
     }
-
-    populateRunSelect();
-    setStatus_('', `${csvFiles.length} run(s) loaded`, 'ok');
-
-  } catch (err) {
-    showError(err.message);
-    setStatus_('', 'error', 'err');
-  }
-
+    populateRunSelect();setDot('ok',`${csvFiles.length} run(s) loaded`);
+  }catch(err){showError(err.message);setDot('err','error');}
   btn.classList.remove('spinning');
 }
 
-function showLoading() {
-  document.getElementById('loading-state').style.display = 'flex';
-  document.getElementById('loading-state').innerHTML = `
-    <div class="loading-spinner"></div>
-    <div class="loading-title">Fetching audit logs…</div>
-    <div class="loading-sub" id="loading-sub">Connecting to GitHub</div>`;
-  document.getElementById('dashboard').style.display = 'none';
+function showLoading(sub){
+  document.getElementById('loading-state').style.display='flex';
+  document.getElementById('loading-state').innerHTML=`<div class="loading-spinner"></div><div class="loading-title">Fetching audit logs</div><div class="loading-sub">${escHtml(sub)}</div>`;
+  document.getElementById('dashboard').style.display='none';
 }
 
-function showError(msg) {
-  document.getElementById('loading-state').style.display = 'flex';
-  document.getElementById('loading-state').innerHTML = `
-    <div class="error-icon">⚠️</div>
-    <div class="loading-title">Could not load audit logs</div>
-    <div class="loading-sub">${escHtml(msg)}</div>
-    <button class="retry-btn" onclick="loadFromGitHub()">Try again</button>`;
-  document.getElementById('dashboard').style.display = 'none';
+function showError(msg){
+  document.getElementById('loading-state').style.display='flex';
+  document.getElementById('loading-state').innerHTML=`<div class="loading-title" style="margin-bottom:12px">Failed to load</div><div class="loading-sub">${escHtml(msg)}</div><button class="retry-btn" onclick="loadFromGitHub()">Retry</button>`;
+  document.getElementById('dashboard').style.display='none';
 }
 
-// ── CSV PARSING ───────────────────────────────────────────────────────
-function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-  return lines.slice(1).map(line => {
-    const vals = splitCSVLine(line);
-    const obj = {};
-    headers.forEach((h, i) => { obj[h] = (vals[i] || '').trim().replace(/^"|"$/g, ''); });
+function parseCSV(text){
+  const lines=text.trim().split('\n');if(lines.length<2)return[];
+  const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+  return lines.slice(1).map(line=>{
+    const vals=splitCSVLine(line),obj={};
+    headers.forEach((h,i)=>{obj[h]=(vals[i]||'').trim().replace(/^"|"$/g,'');});
     return obj;
   });
 }
 
-function splitCSVLine(line) {
-  const result = []; let cur = ''; let inQ = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') { inQ = !inQ; continue; }
-    if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
-    else cur += ch;
-  }
-  result.push(cur);
-  return result;
+function splitCSVLine(line){
+  const r=[];let cur='',inQ=false;
+  for(const ch of line){if(ch==='"'){inQ=!inQ;continue;}if(ch===','&&!inQ){r.push(cur);cur='';}else cur+=ch;}
+  r.push(cur);return r;
 }
 
-// ── RUN SELECT ────────────────────────────────────────────────────────
-function populateRunSelect() {
-  const sel = document.getElementById('run-select');
-  sel.innerHTML = '';
-  const names = Object.keys(runs).sort().reverse();
-  names.forEach(name => {
-    const opt = document.createElement('option');
-    opt.value = name;
-    // pretty-print: audit_20250303_090000.csv → 03 Mar 2025 09:00
-    opt.textContent = prettyRunName(name);
-    sel.appendChild(opt);
+function populateRunSelect(){
+  const sel=document.getElementById('run-select');sel.innerHTML='';
+  Object.keys(runs).sort().reverse().forEach(name=>{
+    const o=document.createElement('option');o.value=name;o.textContent=prettyRunName(name);sel.appendChild(o);
   });
-  switchRun(names[0]);
+  switchRun(sel.options[0]?.value);
 }
 
-function prettyRunName(filename) {
-  // audit_YYYYMMDD_HHMMSS.csv
-  const m = filename.match(/audit_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);
-  if (!m) return filename.replace('audit_','').replace('.csv','');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${m[3]} ${months[+m[2]-1]} ${m[1]}  ${m[4]}:${m[5]} SGT`;
+function prettyRunName(f){
+  const m=f.match(/audit_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);
+  if(!m)return f.replace('audit_','').replace('.csv','');
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${m[3]} ${mo[+m[2]-1]} ${m[1]}  ${m[4]}:${m[5]} SGT`;
 }
 
-function switchRun(name) {
-  if (!name || !runs[name]) return;
-  currentRun = name;
-  currentRows = runs[name];
-  page = 1;
-  document.getElementById('loading-state').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
+function switchRun(name){
+  if(!name||!runs[name])return;
+  currentRows=runs[name];page=1;
+  document.getElementById('loading-state').style.display='none';
+  document.getElementById('dashboard').style.display='block';
   renderAll();
 }
 
-// ── RENDER ────────────────────────────────────────────────────────────
-function renderAll() {
-  renderStats();
-  renderFunnel();
-  renderSources();
-  applyFilters();
+function renderAll(){renderStats();renderFunnel();renderSources();applyFilters();}
+
+function renderStats(){
+  const rows=currentRows,total=rows.length;
+  const kept=rows.filter(r=>r.status==='KEPT').length;
+  const rejected=rows.filter(r=>r.status==='REJECTED').length;
+  const sources=new Set(rows.map(r=>r.source).filter(Boolean)).size;
+  const rate=total?Math.round((kept/total)*100):0;
+  document.getElementById('stats-row').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Total Seen</div><div class="stat-value">${total}</div><div class="stat-sub">articles scraped</div></div>
+    <div class="stat-card"><div class="stat-label">Kept</div><div class="stat-value">${kept}</div><div class="stat-sub">${rate}% pass rate</div></div>
+    <div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-value">${rejected}</div><div class="stat-sub">filtered out</div></div>
+    <div class="stat-card"><div class="stat-label">Sources</div><div class="stat-value">${sources}</div><div class="stat-sub">active feeds</div></div>`;
 }
 
-function renderStats() {
-  const rows = currentRows;
-  const total = rows.length;
-  const kept = rows.filter(r => r.status === 'KEPT').length;
-  const rejected = rows.filter(r => r.status === 'REJECTED').length;
-  const sources = new Set(rows.map(r => r.source).filter(Boolean)).size;
-  const rate = total ? Math.round((kept / total) * 100) : 0;
-
-  document.getElementById('stats-row').innerHTML = `
-    <div class="stat-card blue" style="animation-delay:0s">
-      <div class="stat-label">Total Seen</div>
-      <div class="stat-value">${total}</div>
-      <div class="stat-sub">articles scraped</div>
-    </div>
-    <div class="stat-card green" style="animation-delay:0.05s">
-      <div class="stat-label">Kept</div>
-      <div class="stat-value">${kept}</div>
-      <div class="stat-sub">${rate}% pass rate</div>
-    </div>
-    <div class="stat-card red" style="animation-delay:0.1s">
-      <div class="stat-label">Rejected</div>
-      <div class="stat-value">${rejected}</div>
-      <div class="stat-sub">filtered out</div>
-    </div>
-    <div class="stat-card orange" style="animation-delay:0.15s">
-      <div class="stat-label">Sources</div>
-      <div class="stat-value">${sources}</div>
-      <div class="stat-sub">active feeds</div>
-    </div>`;
-}
-
-function renderFunnel() {
-  const rows = currentRows;
-  const total = rows.length || 1;
-  const stageDefs = [
-    { key: '1_SCRAPER_DATE',   label: 'Too Old',        color: '#5a6478' },
-    { key: '2_SCRAPER_JUNK',   label: 'Junk / Short',   color: '#ffb74d' },
-    { key: '3_KEYWORD_FILTER', label: 'Keyword Filter', color: '#ef9a9a' },
-    { key: '4_LLM_FILTER',     label: 'LLM Filter',     color: '#b39ddb' },
-    { key: '5_DEDUP',          label: 'Dedup',          color: '#80cbc4' },
-    { key: '6_DB_DEDUP',       label: 'Already Sent',   color: '#80cbc4' },
-    { key: '7_SUMMARY',        label: 'No Summary',     color: '#ff4757' },
-    { key: 'FINAL',            label: '✓ Kept',         color: '#00c896', isKept: true },
+function renderFunnel(){
+  const rows=currentRows,total=rows.length||1;
+  const stages=[
+    {key:'1_SCRAPER_DATE',label:'Too Old'},
+    {key:'2_SCRAPER_JUNK',label:'Junk / Short'},
+    {key:'3_KEYWORD_FILTER',label:'Keyword Filter'},
+    {key:'4_LLM_FILTER',label:'LLM Filter'},
+    {key:'5_DEDUP',label:'Dedup'},
+    {key:'6_DB_DEDUP',label:'Already Sent'},
+    {key:'7_SUMMARY',label:'No Summary'},
+    {key:'FINAL',label:'Kept',kept:true},
   ];
-  const counts = {};
-  rows.forEach(r => { counts[r.stage] = (counts[r.stage] || 0) + 1; });
-
-  document.getElementById('funnel').innerHTML = stageDefs.map(s => {
-    const n = counts[s.key] || 0;
-    const pct = Math.round((n / total) * 100);
-    return `<div class="funnel-row">
-      <div class="funnel-meta">
-        <span class="funnel-name">${s.label}</span>
-        <span class="funnel-count">${n}</span>
-      </div>
-      <div class="funnel-bar-bg">
-        <div class="funnel-bar-fill ${s.isKept?'kept':''}" style="background:${s.color};width:0" data-pct="${pct}"></div>
-      </div>
-    </div>`;
+  const counts={};rows.forEach(r=>{counts[r.stage]=(counts[r.stage]||0)+1;});
+  document.getElementById('funnel').innerHTML=stages.map(s=>{
+    const n=counts[s.key]||0,pct=Math.round((n/total)*100);
+    return`<div class="funnel-row"><div class="funnel-meta"><span class="funnel-name">${s.label}</span><span class="funnel-count">${n}</span></div><div class="funnel-bar-bg"><div class="funnel-bar-fill ${s.kept?'':'dim'}" data-pct="${pct}" style="width:0"></div></div></div>`;
   }).join('');
-
-  setTimeout(() => {
-    document.querySelectorAll('.funnel-bar-fill').forEach(el => { el.style.width = el.dataset.pct + '%'; });
-  }, 100);
+  setTimeout(()=>{document.querySelectorAll('.funnel-bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';});},80);
 }
 
-function renderSources() {
-  const rows = currentRows;
-  const counts = {};
-  rows.forEach(r => { if (r.source) counts[r.source] = (counts[r.source] || 0) + 1; });
-  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 15);
-  const max = sorted[0]?.[1] || 1;
-
-  document.getElementById('source-list').innerHTML = sorted.map(([src, n]) => `
-    <div class="source-row">
-      <span class="source-name" title="${escHtml(src)}">${escHtml(src)}</span>
-      <div class="source-bar-bg"><div class="source-bar-fill" data-pct="${Math.round((n/max)*100)}" style="width:0"></div></div>
-      <span class="source-count">${n}</span>
-    </div>`).join('');
-
-  setTimeout(() => {
-    document.querySelectorAll('.source-bar-fill').forEach(el => { el.style.width = el.dataset.pct + '%'; });
-  }, 150);
+function renderSources(){
+  const counts={};currentRows.forEach(r=>{if(r.source)counts[r.source]=(counts[r.source]||0)+1;});
+  const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,15);
+  const max=sorted[0]?.[1]||1;
+  document.getElementById('source-list').innerHTML=sorted.map(([src,n])=>`
+    <div class="source-row"><span class="source-name" title="${escHtml(src)}">${escHtml(src)}</span><div class="source-bar-bg"><div class="source-bar-fill" data-pct="${Math.round((n/max)*100)}" style="width:0"></div></div><span class="source-count">${n}</span></div>`).join('');
+  setTimeout(()=>{document.querySelectorAll('.source-bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';});},120);
 }
 
-// ── FILTER / SORT / TABLE ─────────────────────────────────────────────
-function setStatus(s, btn) {
-  statusFilter = s;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  page = 1; applyFilters();
+function setStatus(s,btn){
+  statusFilter=s;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');page=1;applyFilters();
 }
 
-function sortBy(col) {
-  if (sortCol === col) sortDir = -sortDir; else { sortCol = col; sortDir = 1; }
-  applyFilters();
+function sortBy(col){sortDir=sortCol===col?-sortDir:1;sortCol=col;applyFilters();}
+
+function applyFilters(){
+  const q=document.getElementById('search').value.toLowerCase();
+  let rows=currentRows;
+  if(statusFilter!=='all')rows=rows.filter(r=>r.status===statusFilter);
+  if(q)rows=rows.filter(r=>(r.title||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q)||(r.reason||'').toLowerCase().includes(q)||(r.stage||'').toLowerCase().includes(q));
+  rows=[...rows].sort((a,b)=>{const av=(a[sortCol]||'').toLowerCase(),bv=(b[sortCol]||'').toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0;});
+  filteredRows=rows;renderTable();
 }
 
-function applyFilters() {
-  const q = document.getElementById('search').value.toLowerCase();
-  let rows = currentRows;
-  if (statusFilter !== 'all') rows = rows.filter(r => r.status === statusFilter);
-  if (q) rows = rows.filter(r =>
-    (r.title||'').toLowerCase().includes(q) ||
-    (r.source||'').toLowerCase().includes(q) ||
-    (r.reason||'').toLowerCase().includes(q) ||
-    (r.stage||'').toLowerCase().includes(q));
-  rows = [...rows].sort((a,b) => {
-    const av = (a[sortCol]||'').toLowerCase(), bv = (b[sortCol]||'').toLowerCase();
-    return av < bv ? -sortDir : av > bv ? sortDir : 0;
-  });
-  filteredRows = rows;
-  renderTable();
-}
-
-function renderTable() {
-  const start = (page-1)*PAGE_SIZE;
-  const slice = filteredRows.slice(start, start+PAGE_SIZE);
-  const tbody = document.getElementById('table-body');
-
-  if (!slice.length) {
-    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No articles match the current filter.</td></tr>';
-  } else {
-    tbody.innerHTML = slice.map(r => {
-      const statusBadge = r.status === 'KEPT'
-        ? `<span class="badge badge-kept">Kept</span>`
-        : r.status === 'REJECTED'
-        ? `<span class="badge badge-rejected">Rejected</span>`
-        : `<span class="badge badge-seen">Seen</span>`;
-
-      const reason = r.reason || '';
-      let rc = '';
-      if (reason.includes('LLM')) rc='llm';
-      else if (reason.includes('DEDUP')) rc='dedup';
-      else if (reason.includes('JUNK')) rc='junk';
-      else if (reason.includes('KEYWORD')) rc='keyword';
-      else if (reason.includes('TOO_OLD')) rc='old';
-      const reasonShort = reason.split(':')[0] || '—';
-
-      return `<tr>
-        <td>${statusBadge}</td>
-        <td><span style="font-family:var(--mono);font-size:10px;color:var(--muted)">${r.stage||'—'}</span></td>
-        <td class="title-cell"><a href="${escHtml(r.url||'#')}" target="_blank" title="${escHtml(r.title||'')}">${escHtml(r.title||'—')}</a></td>
-        <td><span class="source-tag">${escHtml(r.source||'—')}</span></td>
-        <td><span class="reason-tag ${rc}">${escHtml(reasonShort||'—')}</span></td>
-      </tr>`;
+function renderTable(){
+  const start=(page-1)*PAGE_SIZE,slice=filteredRows.slice(start,start+PAGE_SIZE);
+  const tbody=document.getElementById('table-body');
+  if(!slice.length){tbody.innerHTML='<tr class="empty-row"><td colspan="5">No articles match.</td></tr>';}
+  else{
+    tbody.innerHTML=slice.map(r=>{
+      const badge=r.status==='KEPT'?'<span class="badge badge-kept">Kept</span>':r.status==='REJECTED'?'<span class="badge badge-rejected">Rejected</span>':'<span class="badge badge-seen">Seen</span>';
+      const rs=(r.reason||'').split(':')[0]||'--';
+      return`<tr><td>${badge}</td><td><span class="stage-tag">${escHtml(r.stage||'--')}</span></td><td class="title-cell"><a href="${escHtml(r.url||'#')}" target="_blank" title="${escHtml(r.title||'')}">${escHtml(r.title||'--')}</a></td><td><span class="source-tag">${escHtml(r.source||'--')}</span></td><td><span class="reason-tag">${escHtml(rs)}</span></td></tr>`;
     }).join('');
   }
   renderPagination();
 }
 
-function renderPagination() {
-  const total = filteredRows.length;
-  const pages = Math.ceil(total/PAGE_SIZE);
-  const start = (page-1)*PAGE_SIZE+1, end = Math.min(page*PAGE_SIZE, total);
-  const pag = document.getElementById('pagination');
-  if (!total) { pag.innerHTML=''; return; }
-
-  let btns='';
-  const maxBtns=7;
-  let startP=Math.max(1,page-3), endP=Math.min(pages,startP+maxBtns-1);
-  if (endP-startP<maxBtns-1) startP=Math.max(1,endP-maxBtns+1);
-  for (let i=startP;i<=endP;i++)
-    btns+=`<button class="page-btn${i===page?' current':''}" onclick="goPage(${i})">${i}</button>`;
-
-  pag.innerHTML=`
-    <span class="page-info">${start}–${end} of ${total}</span>
-    <div class="page-btns">
-      <button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>‹</button>
-      ${btns}
-      <button class="page-btn" onclick="goPage(${page+1})" ${page===pages?'disabled':''}>›</button>
-    </div>`;
+function renderPagination(){
+  const total=filteredRows.length,pages=Math.ceil(total/PAGE_SIZE);
+  const start=(page-1)*PAGE_SIZE+1,end=Math.min(page*PAGE_SIZE,total);
+  const pag=document.getElementById('pagination');
+  if(!total){pag.innerHTML='';return;}
+  let btns='',s=Math.max(1,page-3),e=Math.min(pages,s+6);
+  if(e-s<6)s=Math.max(1,e-6);
+  for(let i=s;i<=e;i++)btns+=`<button class="page-btn${i===page?' current':''}" onclick="goPage(${i})">${i}</button>`;
+  pag.innerHTML=`<span class="page-info">${start}-${end} of ${total}</span><div class="page-btns"><button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>&#8249;</button>${btns}<button class="page-btn" onclick="goPage(${page+1})" ${page===pages?'disabled':''}>&#8250;</button></div>`;
 }
 
-function goPage(p) {
-  const pages = Math.ceil(filteredRows.length/PAGE_SIZE);
-  if (p<1||p>pages) return;
-  page=p; renderTable();
-  window.scrollTo({top:0,behavior:'smooth'});
+function goPage(p){
+  const pages=Math.ceil(filteredRows.length/PAGE_SIZE);
+  if(p<1||p>pages)return;page=p;renderTable();window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ── BOOT ──────────────────────────────────────────────────────────────
 loadFromGitHub();
 </script>
 </body>
