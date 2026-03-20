@@ -1,201 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
-    --bg: #ffffff; --surface: #f7f7f7; --surface2: #efefef;
-    --border: #e0e0e0; --border2: #c8c8c8;
-    --text: #111111; --text2: #444444; --muted: #888888; --muted2: #bbbbbb;
-    --font: 'IBM Plex Mono', monospace; --danger: #cc2222; --success: #1a7a3a;
+    --bg:#ffffff;--surface:#f7f7f7;--surface2:#efefef;
+    --border:#e0e0e0;--border2:#c8c8c8;
+    --text:#111111;--text2:#444444;--muted:#888888;--muted2:#bbbbbb;
+    --font:'IBM Plex Mono',monospace;--danger:#cc2222;--success:#1a7a3a;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 13px; min-height: 100vh; -webkit-font-smoothing: antialiased; }
-  header { border-bottom: 1px solid var(--border); padding: 0 36px; height: 52px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); position: sticky; top: 0; z-index: 100; gap: 16px; }
-  .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .run-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-  .run-select { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 6px 28px 6px 10px; cursor: pointer; outline: none; min-width: 210px; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
-  .run-select:focus { border-color: var(--text); }
-  .refresh-btn { background: var(--text); color: var(--bg); border: none; font-family: var(--font); font-size: 11px; font-weight: 500; padding: 6px 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: opacity 0.15s; display: flex; align-items: center; gap: 6px; }
-  .refresh-btn:hover { opacity: 0.7; }
-  .refresh-btn.spinning .spin-icon { animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spin-icon { display: inline-block; }
-  .status-indicator { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted2); flex-shrink: 0; }
-  .status-dot.ok { background: var(--text); }
-  .status-dot.err { background: var(--muted); }
-  .status-dot.loading { animation: blink 1s infinite; }
-  @keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
-  .tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 36px; background: var(--bg); position: sticky; top: 52px; z-index: 99; }
-  .tab-btn { font-family: var(--font); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); background: none; border: none; border-bottom: 2px solid transparent; padding: 12px 16px; cursor: pointer; transition: all 0.15s; margin-bottom: -1px; }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
-  #loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 104px); text-align: center; padding: 40px; }
-  .loading-spinner { width: 24px; height: 24px; border: 1px solid var(--border2); border-top-color: var(--text); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 20px; }
-  .loading-title { font-size: 13px; font-weight: 500; margin-bottom: 8px; }
-  .loading-sub { font-size: 12px; color: var(--muted); line-height: 1.8; white-space: pre-line; }
-  .retry-btn { margin-top: 20px; background: var(--text); color: var(--bg); border: none; padding: 8px 20px; font-family: var(--font); font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; }
-  #dashboard { padding: 32px 36px; max-width: 1400px; margin: 0 auto; animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn { from{opacity:0}to{opacity:1} }
-  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--border); margin-bottom: 40px; }
-  .stat-card { padding: 24px 28px; border-right: 1px solid var(--border); }
-  .stat-card:last-child { border-right: none; }
-  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 12px; }
-  .stat-value { font-size: 40px; font-weight: 300; line-height: 1; margin-bottom: 6px; letter-spacing: -0.02em; }
-  .stat-sub { font-size: 11px; color: var(--muted); }
-  .section-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
-  .funnel-stages { display: flex; flex-direction: column; gap: 12px; }
-  .funnel-row { display: flex; flex-direction: column; gap: 5px; }
-  .funnel-meta { display: flex; justify-content: space-between; font-size: 11px; }
-  .funnel-name { color: var(--text2); }
-  .funnel-count { color: var(--muted); font-weight: 500; }
-  .funnel-bar-bg { height: 3px; background: var(--surface2); }
-  .funnel-bar-fill { height: 100%; background: var(--text); transition: width 0.7s cubic-bezier(0.25,1,0.5,1); width: 0; }
-  .funnel-bar-fill.dim { background: var(--muted2); }
-  .source-list { display: flex; flex-direction: column; gap: 10px; }
-  .source-row { display: grid; grid-template-columns: 180px 1fr 40px; align-items: center; gap: 12px; }
-  .source-name { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .source-bar-bg { height: 2px; background: var(--surface2); }
-  .source-bar-fill { height: 100%; background: var(--text); transition: width 0.7s cubic-bezier(0.25,1,0.5,1); width: 0; }
-  .source-count { font-size: 11px; color: var(--muted); text-align: right; }
-  .table-section { margin-bottom: 40px; }
-  .table-toolbar { display: flex; gap: 8px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
-  .search-box { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 7px 12px; outline: none; flex: 1; min-width: 200px; }
-  .search-box::placeholder { color: var(--muted2); }
-  .search-box:focus { border-color: var(--text); }
-  .filter-btn { background: var(--bg); border: 1px solid var(--border2); color: var(--muted); font-family: var(--font); font-size: 11px; padding: 7px 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.06em; transition: all 0.1s; }
-  .filter-btn:hover { border-color: var(--text); color: var(--text); }
-  .filter-btn.active { background: var(--text); border-color: var(--text); color: var(--bg); }
-  .table-wrap { border: 1px solid var(--border); overflow: hidden; }
-  table { width: 100%; border-collapse: collapse; }
-  thead th { background: var(--surface); font-family: var(--font); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; font-weight: 400; }
-  thead th:hover { color: var(--text); }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  tbody tr:hover { background: var(--surface); }
-  tbody tr:last-child { border-bottom: none; }
-  td { padding: 10px 14px; font-size: 12px; vertical-align: middle; }
-  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; border: 1px solid; }
-  .badge-kept { color: var(--text); border-color: var(--text); }
-  .badge-rejected { color: var(--muted); border-color: var(--border2); }
-  .badge-seen { color: var(--muted2); border-color: var(--border); }
-  .reason-tag { display: inline-block; font-size: 10px; padding: 2px 7px; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); white-space: nowrap; }
-  .stage-tag { font-size: 10px; color: var(--muted); }
-  .title-cell { max-width: 320px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .title-cell a { color: var(--text2); text-decoration: none; }
-  .title-cell a:hover { color: var(--text); text-decoration: underline; }
-  .source-tag { font-size: 11px; color: var(--muted); white-space: nowrap; }
-  .pub-date { font-size: 11px; color: var(--muted); white-space: nowrap; }
-  .pub-date.unknown { color: var(--muted2); font-style: italic; }
-  .pagination { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--surface); }
-  .page-info { font-size: 11px; color: var(--muted); }
-  .page-btns { display: flex; gap: 4px; }
-  .page-btn { background: var(--bg); border: 1px solid var(--border2); color: var(--muted); font-family: var(--font); font-size: 11px; padding: 4px 10px; cursor: pointer; transition: all 0.1s; }
-  .page-btn:hover:not(:disabled) { border-color: var(--text); color: var(--text); }
-  .page-btn:disabled { opacity: 0.3; cursor: default; }
-  .page-btn.current { background: var(--text); border-color: var(--text); color: var(--bg); }
-  .empty-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 12px; }
-  .panel-inner { padding: 32px 36px; max-width: 1100px; margin: 0 auto; }
-  .panel-title { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 4px; }
-  .panel-sub { font-size: 11px; color: var(--muted); }
-  .panel-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
-  .config-note { font-size: 11px; color: var(--muted); background: var(--surface); border: 1px solid var(--border); padding: 10px 14px; margin-bottom: 24px; line-height: 1.7; }
-  .config-note code { background: var(--surface2); padding: 1px 5px; font-family: var(--font); }
-  .box-form { border: 1px solid var(--border); background: var(--surface); padding: 20px 24px; margin-bottom: 32px; }
-  .box-form-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 16px; }
-  .form-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
-  .form-input { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 8px 12px; outline: none; }
-  .form-input:focus { border-color: var(--text); }
-  .form-input.url-input { width: 380px; }
-  .form-select { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 8px 28px 8px 12px; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; min-width: 180px; }
-  .form-select:focus { border-color: var(--text); }
-  .add-btn { background: var(--text); color: var(--bg); border: none; font-family: var(--font); font-size: 11px; font-weight: 500; padding: 8px 18px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; align-self: flex-end; transition: opacity 0.15s; }
-  .add-btn:hover { opacity: 0.7; }
-  .add-btn:disabled { opacity: 0.3; cursor: default; }
-  .form-error { font-size: 11px; color: var(--danger); margin-top: 8px; display: none; }
-  .cat-section { margin-bottom: 32px; }
-  .cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-  .cat-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
-  .cat-count { font-size: 10px; color: var(--muted2); }
-  .feed-list { display: flex; flex-direction: column; gap: 1px; }
-  .feed-item { display: grid; grid-template-columns: 32px 1fr 160px auto; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); transition: background 0.1s; }
-  .feed-item:hover { background: var(--surface); }
-  .feed-item.inactive { opacity: 0.45; }
-  .toggle { position: relative; width: 28px; height: 16px; flex-shrink: 0; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .toggle-track { position: absolute; inset: 0; background: var(--border2); cursor: pointer; transition: background 0.2s; }
-  .toggle-track::after { content:''; position: absolute; width: 10px; height: 10px; background: white; top: 3px; left: 3px; transition: transform 0.2s; }
-  .toggle input:checked + .toggle-track { background: var(--text); }
-  .toggle input:checked + .toggle-track::after { transform: translateX(12px); }
-  .feed-url { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: default; }
-  .feed-label-input { background: transparent; border: 1px solid transparent; color: var(--muted); font-family: var(--font); font-size: 11px; padding: 3px 6px; outline: none; width: 100%; transition: all 0.15s; }
-  .feed-label-input:hover { border-color: var(--border2); }
-  .feed-label-input:focus { border-color: var(--text); background: var(--bg); color: var(--text); }
-  .feed-label-input::placeholder { color: var(--muted2); }
-  .feed-actions { display: flex; gap: 6px; align-items: center; }
-  .del-btn { background: none; border: 1px solid transparent; color: var(--muted2); font-family: var(--font); font-size: 11px; padding: 3px 8px; cursor: pointer; transition: all 0.15s; }
-  .del-btn:hover { border-color: var(--danger); color: var(--danger); }
-  /* KEYWORDS */
-  .kw-layout { display: grid; grid-template-columns: 240px 1fr; border: 1px solid var(--border); }
-  .kw-sidebar { border-right: 1px solid var(--border); background: var(--surface); }
-  .kw-sidebar-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 14px 16px 10px; border-bottom: 1px solid var(--border); }
-  .kw-list-btn { width: 100%; text-align: left; background: none; border: none; border-bottom: 1px solid var(--border); font-family: var(--font); font-size: 11px; padding: 11px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.1s; color: var(--text2); }
-  .kw-list-btn:hover { background: var(--surface2); }
-  .kw-list-btn.active { background: var(--bg); color: var(--text); font-weight: 500; border-left: 2px solid var(--text); padding-left: 14px; }
-  .kw-list-btn:last-child { border-bottom: none; }
-  .kw-list-count { font-size: 10px; color: var(--muted2); background: var(--surface2); padding: 1px 6px; border-radius: 0; border: 1px solid var(--border); }
-  .kw-list-btn.active .kw-list-count { color: var(--muted); }
-  .kw-main { display: flex; flex-direction: column; min-height: 400px; }
-  .kw-main-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; background: var(--surface); }
-  .kw-main-title { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
-  .kw-main-desc { font-size: 11px; color: var(--muted); line-height: 1.5; max-width: 400px; }
-  .kw-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
-  .kw-input { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 7px 12px; outline: none; width: 240px; }
-  .kw-input:focus { border-color: var(--text); }
-  .kw-input::placeholder { color: var(--muted2); }
-  .kw-search { background: var(--bg); border: 1px solid var(--border2); color: var(--text); font-family: var(--font); font-size: 12px; padding: 7px 12px; outline: none; width: 160px; }
-  .kw-search:focus { border-color: var(--text); }
-  .kw-search::placeholder { color: var(--muted2); }
-  .kw-add-btn { background: var(--text); color: var(--bg); border: none; font-family: var(--font); font-size: 11px; font-weight: 500; padding: 7px 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; transition: opacity 0.15s; white-space: nowrap; }
-  .kw-add-btn:hover { opacity: 0.7; }
-  .kw-add-btn:disabled { opacity: 0.3; cursor: default; }
-  .kw-chips-area { padding: 20px; display: flex; flex-wrap: wrap; gap: 8px; align-content: flex-start; flex: 1; }
-  .kw-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); font-family: var(--font); font-size: 11px; color: var(--text2); padding: 5px 10px; transition: all 0.1s; }
-  .kw-chip:hover { border-color: var(--border2); background: var(--surface2); }
-  .kw-chip-text { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .kw-chip-del { background: none; border: none; cursor: pointer; color: var(--muted2); font-size: 15px; line-height: 1; padding: 0 2px; transition: color 0.1s; flex-shrink: 0; font-family: var(--font); }
-  .kw-chip-del:hover { color: var(--danger); }
-  .kw-empty { padding: 40px 20px; text-align: center; color: var(--muted); font-size: 12px; width: 100%; }
-  .panel-loading { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 12px; }
-  .panel-error { text-align: center; padding: 40px 20px; color: var(--danger); font-size: 12px; }
-  .panel-error button { margin-top: 12px; background: var(--text); color: var(--bg); border: none; padding: 6px 16px; font-family: var(--font); font-size: 11px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-left: auto; margin-right: auto; }
-  #toast { position: fixed; bottom: 24px; right: 24px; background: var(--text); color: var(--bg); font-family: var(--font); font-size: 12px; padding: 10px 18px; z-index: 9999; opacity: 0; transform: translateY(8px); transition: all 0.25s; pointer-events: none; }
-  #toast.show { opacity: 1; transform: translateY(0); }
-  #toast.error { background: var(--danger); }
-  @media (max-width: 960px) {
-    header { padding: 0 18px; } .tabs { padding: 0 18px; } .panel-inner, #dashboard { padding: 24px 18px; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
-    .stat-card:nth-child(2) { border-right: none; }
-    .stat-card:nth-child(3), .stat-card:nth-child(4) { border-top: 1px solid var(--border); }
-    .two-col { grid-template-columns: 1fr; gap: 24px; }
-    .form-input.url-input { width: 100%; }
-    .feed-item { grid-template-columns: 32px 1fr auto; }
-    .feed-label-input { display: none; }
-    .col-pub { display: none; }
-    .kw-layout { grid-template-columns: 1fr; }
-    .kw-sidebar { border-right: none; border-bottom: 1px solid var(--border); }
-    .kw-input, .kw-search { width: 100%; }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased;}
+  header{border-bottom:1px solid var(--border);padding:0 36px;height:52px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:100;gap:16px;}
+  .header-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .run-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
+  .run-select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:6px 28px 6px 10px;cursor:pointer;outline:none;min-width:210px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+  .refresh-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:6px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;display:flex;align-items:center;gap:6px;}
+  .refresh-btn:hover{opacity:0.7;}
+  .refresh-btn.spinning .spin-icon{animation:spin 0.8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .spin-icon{display:inline-block;}
+  .status-indicator{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2);flex-shrink:0;}
+  .status-dot.ok{background:var(--text);}.status-dot.err{background:var(--muted);}
+  .status-dot.loading{animation:blink 1s infinite;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+  .tabs{display:flex;border-bottom:1px solid var(--border);padding:0 36px;background:var(--bg);position:sticky;top:52px;z-index:99;}
+  .tab-btn{font-family:var(--font);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;padding:12px 16px;cursor:pointer;transition:all 0.15s;margin-bottom:-1px;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{color:var(--text);border-bottom-color:var(--text);font-weight:500;}
+  .tab-panel{display:none;}.tab-panel.active{display:block;}
+  #loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 104px);text-align:center;padding:40px;}
+  .loading-spinner{width:24px;height:24px;border:1px solid var(--border2);border-top-color:var(--text);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;}
+  .loading-title{font-size:13px;font-weight:500;margin-bottom:8px;}
+  .loading-sub{font-size:12px;color:var(--muted);line-height:1.8;white-space:pre-line;}
+  .retry-btn{margin-top:20px;background:var(--text);color:var(--bg);border:none;padding:8px 20px;font-family:var(--font);font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;}
+  #dashboard{padding:32px 36px;max-width:1400px;margin:0 auto;animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);margin-bottom:40px;}
+  .stat-card{padding:24px 28px;border-right:1px solid var(--border);}
+  .stat-card:last-child{border-right:none;}
+  .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;}
+  .stat-value{font-size:40px;font-weight:300;line-height:1;margin-bottom:6px;letter-spacing:-0.02em;}
+  .stat-sub{font-size:11px;color:var(--muted);}
+  .section-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:40px;}
+  .funnel-stages{display:flex;flex-direction:column;gap:12px;}
+  .funnel-row{display:flex;flex-direction:column;gap:5px;}
+  .funnel-meta{display:flex;justify-content:space-between;font-size:11px;}
+  .funnel-name{color:var(--text2);}.funnel-count{color:var(--muted);font-weight:500;}
+  .funnel-bar-bg{height:3px;background:var(--surface2);}
+  .funnel-bar-fill{height:100%;background:var(--text);transition:width 0.7s cubic-bezier(0.25,1,0.5,1);width:0;}
+  .funnel-bar-fill.dim{background:var(--muted2);}
+  .source-list{display:flex;flex-direction:column;gap:10px;}
+  .source-row{display:grid;grid-template-columns:180px 1fr 40px;align-items:center;gap:12px;}
+  .source-name{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .source-bar-bg{height:2px;background:var(--surface2);}
+  .source-bar-fill{height:100%;background:var(--text);transition:width 0.7s cubic-bezier(0.25,1,0.5,1);width:0;}
+  .source-count{font-size:11px;color:var(--muted);text-align:right;}
+  .table-section{margin-bottom:40px;}
+  .table-toolbar{display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;}
+  .search-box{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:7px 12px;outline:none;flex:1;min-width:200px;}
+  .search-box::placeholder{color:var(--muted2);}.search-box:focus{border-color:var(--text);}
+  .filter-btn{background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--font);font-size:11px;padding:7px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;transition:all 0.1s;}
+  .filter-btn:hover{border-color:var(--text);color:var(--text);}
+  .filter-btn.active{background:var(--text);border-color:var(--text);color:var(--bg);}
+  .table-wrap{border:1px solid var(--border);overflow:hidden;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{background:var(--surface);font-family:var(--font);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;font-weight:400;}
+  thead th:hover{color:var(--text);}
+  tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s;}
+  tbody tr:hover{background:var(--surface);}
+  tbody tr:last-child{border-bottom:none;}
+  td{padding:10px 14px;font-size:12px;vertical-align:middle;}
+  .badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;border:1px solid;}
+  .badge-kept{color:var(--text);border-color:var(--text);}
+  .badge-rejected{color:var(--muted);border-color:var(--border2);}
+  .badge-seen{color:var(--muted2);border-color:var(--border);}
+  .reason-tag{display:inline-block;font-size:10px;padding:2px 7px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);white-space:nowrap;}
+  .stage-tag{font-size:10px;color:var(--muted);}
+  .title-cell{max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .title-cell a{color:var(--text2);text-decoration:none;}
+  .title-cell a:hover{color:var(--text);text-decoration:underline;}
+  .source-tag{font-size:11px;color:var(--muted);white-space:nowrap;}
+  .pub-date{font-size:11px;color:var(--muted);white-space:nowrap;}
+  .pub-date.unknown{color:var(--muted2);font-style:italic;}
+  .pagination{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-top:1px solid var(--border);background:var(--surface);}
+  .page-info{font-size:11px;color:var(--muted);}
+  .page-btns{display:flex;gap:4px;}
+  .page-btn{background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--font);font-size:11px;padding:4px 10px;cursor:pointer;transition:all 0.1s;}
+  .page-btn:hover:not(:disabled){border-color:var(--text);color:var(--text);}
+  .page-btn:disabled{opacity:0.3;cursor:default;}
+  .page-btn.current{background:var(--text);border-color:var(--text);color:var(--bg);}
+  .empty-row td{text-align:center;padding:40px;color:var(--muted);font-size:12px;}
+  /* shared panel */
+  .panel-inner{padding:32px 36px;max-width:1100px;margin:0 auto;}
+  .panel-title{font-size:13px;font-weight:600;letter-spacing:0.04em;margin-bottom:4px;}
+  .panel-sub{font-size:11px;color:var(--muted);}
+  .panel-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;flex-wrap:wrap;gap:12px;}
+  .config-note{font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:10px 14px;margin-bottom:24px;line-height:1.7;}
+  .config-note code{background:var(--surface2);padding:1px 5px;font-family:var(--font);}
+  .box-form{border:1px solid var(--border);background:var(--surface);padding:20px 24px;margin-bottom:32px;}
+  .box-form-title{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:16px;}
+  .form-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;}
+  .form-group{display:flex;flex-direction:column;gap:6px;}
+  .form-group label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);}
+  .form-input{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:8px 12px;outline:none;}
+  .form-input:focus{border-color:var(--text);}
+  .form-input.url-input{width:380px;}
+  .form-select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:8px 28px 8px 12px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;min-width:180px;}
+  .form-select:focus{border-color:var(--text);}
+  .add-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:8px 18px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;align-self:flex-end;transition:opacity 0.15s;}
+  .add-btn:hover{opacity:0.7;}.add-btn:disabled{opacity:0.3;cursor:default;}
+  .form-error{font-size:11px;color:var(--danger);margin-top:8px;display:none;}
+  /* feeds */
+  .cat-section{margin-bottom:32px;}
+  .cat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+  .cat-title{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
+  .cat-count{font-size:10px;color:var(--muted2);}
+  .feed-list{display:flex;flex-direction:column;gap:1px;}
+  .feed-item{display:grid;grid-template-columns:32px 1fr 160px auto;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);transition:background 0.1s;}
+  .feed-item:hover{background:var(--surface);}
+  .feed-item.inactive{opacity:0.45;}
+  .toggle{position:relative;width:28px;height:16px;flex-shrink:0;}
+  .toggle input{opacity:0;width:0;height:0;}
+  .toggle-track{position:absolute;inset:0;background:var(--border2);cursor:pointer;transition:background 0.2s;}
+  .toggle-track::after{content:'';position:absolute;width:10px;height:10px;background:white;top:3px;left:3px;transition:transform 0.2s;}
+  .toggle input:checked+.toggle-track{background:var(--text);}
+  .toggle input:checked+.toggle-track::after{transform:translateX(12px);}
+  .feed-url{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;}
+  .feed-label-input{background:transparent;border:1px solid transparent;color:var(--muted);font-family:var(--font);font-size:11px;padding:3px 6px;outline:none;width:100%;transition:all 0.15s;}
+  .feed-label-input:hover{border-color:var(--border2);}
+  .feed-label-input:focus{border-color:var(--text);background:var(--bg);color:var(--text);}
+  .feed-label-input::placeholder{color:var(--muted2);}
+  .feed-actions{display:flex;gap:6px;align-items:center;}
+  .del-btn{background:none;border:1px solid transparent;color:var(--muted2);font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;transition:all 0.15s;}
+  .del-btn:hover{border-color:var(--danger);color:var(--danger);}
+  /* keywords */
+  .kw-layout{display:grid;grid-template-columns:240px 1fr;border:1px solid var(--border);}
+  .kw-sidebar{border-right:1px solid var(--border);background:var(--surface);}
+  .kw-sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:14px 16px 10px;border-bottom:1px solid var(--border);}
+  .kw-list-btn{width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-family:var(--font);font-size:11px;padding:11px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background 0.1s;color:var(--text2);}
+  .kw-list-btn:hover{background:var(--surface2);}
+  .kw-list-btn.active{background:var(--bg);color:var(--text);font-weight:500;border-left:2px solid var(--text);padding-left:14px;}
+  .kw-list-btn:last-child{border-bottom:none;}
+  .kw-list-count{font-size:10px;color:var(--muted2);background:var(--surface2);padding:1px 6px;border:1px solid var(--border);}
+  .kw-list-btn.active .kw-list-count{color:var(--muted);}
+  .kw-main{display:flex;flex-direction:column;min-height:400px;}
+  .kw-main-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;background:var(--surface);}
+  .kw-main-title{font-size:12px;font-weight:500;margin-bottom:3px;}
+  .kw-main-desc{font-size:11px;color:var(--muted);line-height:1.5;max-width:400px;}
+  .kw-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;}
+  .kw-input{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:7px 12px;outline:none;width:240px;}
+  .kw-input:focus{border-color:var(--text);}
+  .kw-input::placeholder{color:var(--muted2);}
+  .kw-search{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:7px 12px;outline:none;width:160px;}
+  .kw-search:focus{border-color:var(--text);}
+  .kw-search::placeholder{color:var(--muted2);}
+  .kw-add-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:7px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;white-space:nowrap;}
+  .kw-add-btn:hover{opacity:0.7;}.kw-add-btn:disabled{opacity:0.3;cursor:default;}
+  .kw-chips-area{padding:20px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;flex:1;}
+  .kw-chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);font-family:var(--font);font-size:11px;color:var(--text2);padding:5px 10px;transition:all 0.1s;}
+  .kw-chip:hover{border-color:var(--border2);background:var(--surface2);}
+  .kw-chip-text{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .kw-chip-del{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:15px;line-height:1;padding:0 2px;transition:color 0.1s;flex-shrink:0;font-family:var(--font);}
+  .kw-chip-del:hover{color:var(--danger);}
+  .kw-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12px;width:100%;}
+  /* SETTINGS TAB */
+  .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;}
+  .settings-card{border:1px solid var(--border);background:var(--bg);}
+  .settings-card-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .settings-card-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;}
+  .settings-card-desc{font-size:11px;color:var(--muted);}
+  .settings-card-body{padding:20px;}
+  /* Number input with +/- */
+  .num-input-row{display:flex;align-items:center;gap:0;}
+  .num-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-family:var(--font);font-size:16px;width:36px;height:38px;cursor:pointer;transition:all 0.1s;display:flex;align-items:center;justify-content:center;user-select:none;}
+  .num-btn:hover{background:var(--surface2);color:var(--text);}
+  .num-input{background:var(--bg);border:1px solid var(--border2);border-left:none;border-right:none;color:var(--text);font-family:var(--font);font-size:14px;font-weight:500;padding:0 16px;height:38px;width:80px;text-align:center;outline:none;-moz-appearance:textfield;}
+  .num-input::-webkit-inner-spin-button,.num-input::-webkit-outer-spin-button{appearance:none;}
+  .num-input:focus{border-color:var(--text);}
+  .num-unit{font-size:11px;color:var(--muted);margin-left:10px;}
+  /* Filter mode toggle */
+  .mode-toggle{display:flex;border:1px solid var(--border2);overflow:hidden;width:fit-content;}
+  .mode-btn{background:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:9px 20px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);transition:all 0.15s;}
+  .mode-btn:hover{color:var(--text);}
+  .mode-btn.active{background:var(--text);color:var(--bg);}
+  .mode-hint{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;padding:10px 12px;background:var(--surface);border:1px solid var(--border);}
+  /* Run Brief section */
+  .run-section{border:1px solid var(--border);margin-bottom:32px;}
+  .run-section-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .run-section-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;}
+  .run-section-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+  .run-section-body{padding:20px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+  .run-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:12px;font-weight:500;padding:10px 24px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;display:flex;align-items:center;gap:8px;}
+  .run-btn:hover{opacity:0.75;}
+  .run-btn:disabled{opacity:0.35;cursor:default;}
+  .run-btn.running{background:var(--muted);}
+  .run-btn-clear{background:var(--bg);color:var(--text);border:1px solid var(--border2);font-family:var(--font);font-size:12px;font-weight:500;padding:10px 24px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:all 0.15s;}
+  .run-btn-clear:hover{border-color:var(--text);}
+  .run-btn-clear:disabled{opacity:0.35;cursor:default;}
+  .run-status-box{flex:1;min-width:260px;border:1px solid var(--border);background:var(--surface);padding:14px 16px;font-size:11px;min-height:60px;}
+  .run-status-label{color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;font-size:10px;}
+  .run-status-value{color:var(--text2);line-height:1.6;}
+  .run-status-value.ok{color:var(--success);}
+  .run-status-value.err{color:var(--danger);}
+  .run-status-value.running{color:var(--muted);animation:blink 1s infinite;}
+  .run-output{margin-top:16px;background:var(--surface2);border:1px solid var(--border);padding:14px 16px;font-size:11px;color:var(--text2);white-space:pre-wrap;max-height:220px;overflow-y:auto;line-height:1.6;display:none;}
+  .save-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:8px 20px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;margin-top:16px;}
+  .save-btn:hover{opacity:0.7;}.save-btn:disabled{opacity:0.3;cursor:default;}
+  .api-config{border:1px solid var(--border);background:var(--surface);padding:20px 24px;margin-bottom:24px;}
+  .api-config-title{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:14px;}
+  .api-status{font-size:11px;margin-top:8px;display:flex;align-items:center;gap:6px;}
+  /* generic */
+  .panel-loading{text-align:center;padding:60px 20px;color:var(--muted);font-size:12px;}
+  .panel-error{text-align:center;padding:40px 20px;color:var(--danger);font-size:12px;}
+  .panel-error button{margin-top:12px;background:var(--text);color:var(--bg);border:none;padding:6px 16px;font-family:var(--font);font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-left:auto;margin-right:auto;}
+  #toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);font-family:var(--font);font-size:12px;padding:10px 18px;z-index:9999;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;}
+  #toast.show{opacity:1;transform:translateY(0);}
+  #toast.error{background:var(--danger);}
+  @media(max-width:960px){
+    header{padding:0 18px;}.tabs{padding:0 18px;}.panel-inner,#dashboard{padding:24px 18px;}
+    .stats-row{grid-template-columns:1fr 1fr;}
+    .stat-card:nth-child(2){border-right:none;}
+    .stat-card:nth-child(3),.stat-card:nth-child(4){border-top:1px solid var(--border);}
+    .two-col{grid-template-columns:1fr;gap:24px;}
+    .form-input.url-input{width:100%;}
+    .feed-item{grid-template-columns:32px 1fr auto;}
+    .feed-label-input{display:none;}
+    .col-pub{display:none;}
+    .kw-layout{grid-template-columns:1fr;}
+    .kw-sidebar{border-right:none;border-bottom:1px solid var(--border);}
+    .kw-input,.kw-search{width:100%;}
+    .settings-grid{grid-template-columns:1fr;}
   }
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); }
+  ::-webkit-scrollbar{width:5px;height:5px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--border2);}
 </style>
 </head>
 <body>
@@ -218,6 +261,7 @@
     <button class="tab-btn active" onclick="switchTab('audit',this)">Audit Log</button>
     <button class="tab-btn" onclick="switchTab('feeds',this)">Feed Sources</button>
     <button class="tab-btn" onclick="switchTab('keywords',this)">Keywords</button>
+    <button class="tab-btn" onclick="switchTab('settings',this)">Settings</button>
   </div>
 
   <!-- AUDIT TAB -->
@@ -236,7 +280,7 @@
       <div class="table-section">
         <div class="section-label">All Articles</div>
         <div class="table-toolbar">
-          <input class="search-box" type="text" id="search" placeholder="Search title, source, reason..." oninput="applyFilters()" />
+          <input class="search-box" type="text" id="search" placeholder="Search title, source, reason..." oninput="applyFilters()"/>
           <button class="filter-btn active" onclick="setStatus('all',this)">All</button>
           <button class="filter-btn" onclick="setStatus('KEPT',this)">Kept</button>
           <button class="filter-btn" onclick="setStatus('REJECTED',this)">Rejected</button>
@@ -264,18 +308,9 @@
   <div id="feeds-tab" class="tab-panel">
     <div class="panel-inner">
       <div class="panel-header">
-        <div><div class="panel-title">Feed Sources</div><div class="panel-sub">Manage RSS and scrape-only sources. Changes take effect on the next run.</div></div>
+        <div><div class="panel-title">Feed Sources</div><div class="panel-sub">Manage RSS and scrape-only sources.</div></div>
       </div>
-      <div class="config-note" id="feeds-sb-note">Connect to Supabase — enter credentials below to manage feeds.</div>
-      <div class="box-form" id="feeds-sb-form">
-        <div class="box-form-title">Supabase Connection</div>
-        <div class="form-row">
-          <div class="form-group"><label>Supabase URL</label><input type="text" class="form-input" id="sb-url" placeholder="https://xxxx.supabase.co" style="width:280px"/></div>
-          <div class="form-group"><label>Anon Key</label><input type="password" class="form-input" id="sb-key" placeholder="eyJ..." style="width:280px"/></div>
-          <button class="add-btn" onclick="connectSupabase()">Connect</button>
-        </div>
-        <div class="form-error" id="sb-error"></div>
-      </div>
+      <div class="config-note" id="feeds-sb-note">Connect to Supabase — enter credentials on the Settings tab first.</div>
       <div class="box-form" id="add-feed-form" style="display:none">
         <div class="box-form-title">Add New Feed</div>
         <div class="form-row">
@@ -283,7 +318,7 @@
           <div class="form-group"><label>Category</label>
             <select class="form-select" id="new-category">
               <option value="GENERAL_CYBERSEC">General Cybersec (filtered)</option>
-              <option value="AUTO_FOCUSED">Auto Focused (no filter)</option>
+              <option value="AUTO_FOCUSED">Auto Focused (filtered)</option>
               <option value="SG_NEWS">Singapore News (filtered)</option>
               <option value="SCRAPE_ONLY_CYBERSEC">Scrape Only — Cybersec</option>
               <option value="SCRAPE_ONLY_AUTO">Scrape Only — Auto</option>
@@ -294,7 +329,7 @@
         </div>
         <div class="form-error" id="add-error"></div>
       </div>
-      <div id="feeds-content"><div class="panel-loading">Connect to Supabase above to manage feeds.</div></div>
+      <div id="feeds-content"><div class="panel-loading">Connect to Supabase on the Settings tab first.</div></div>
     </div>
   </div>
 
@@ -304,18 +339,137 @@
       <div class="panel-header">
         <div><div class="panel-title">Keyword Filter Lists</div><div class="panel-sub">Add or remove keywords. Changes are live on the next scrape run.</div></div>
       </div>
-      <div id="kw-sb-note" class="config-note">Connect to Supabase on the <strong>Feed Sources</strong> tab first, then return here.</div>
+      <div id="kw-sb-note" class="config-note">Connect to Supabase on the <strong>Settings</strong> tab first.</div>
       <div id="kw-content" style="display:none">
         <div class="kw-layout">
           <div class="kw-sidebar">
             <div class="kw-sidebar-title">Lists</div>
             <div id="kw-sidebar-list"></div>
           </div>
-          <div class="kw-main" id="kw-main">
-            <div class="panel-loading">Select a list from the left.</div>
+          <div class="kw-main" id="kw-main"><div class="panel-loading">Select a list.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS TAB -->
+  <div id="settings-tab" class="tab-panel">
+    <div class="panel-inner">
+      <div class="panel-header">
+        <div><div class="panel-title">Settings</div><div class="panel-sub">Supabase connection, scraper settings, and manual run trigger.</div></div>
+      </div>
+
+      <!-- Supabase connection (always shown) -->
+      <div class="box-form" id="sb-connect-form">
+        <div class="box-form-title">Supabase Connection</div>
+        <div class="form-row">
+          <div class="form-group"><label>Supabase URL</label><input type="text" class="form-input" id="sb-url" placeholder="https://xxxx.supabase.co" style="width:280px"/></div>
+          <div class="form-group"><label>Anon Key</label><input type="password" class="form-input" id="sb-key" placeholder="eyJ..." style="width:280px"/></div>
+          <button class="add-btn" onclick="connectSupabase()">Connect</button>
+        </div>
+        <div class="form-error" id="sb-error"></div>
+        <div class="api-status" id="sb-status-line" style="display:none">
+          <span class="status-dot" id="sb-dot"></span>
+          <span id="sb-status-text"></span>
+        </div>
+      </div>
+
+      <!-- API config -->
+      <div class="api-config" id="api-config-form">
+        <div class="api-config-title">API Server (for Run Brief button)</div>
+        <div class="form-row">
+          <div class="form-group"><label>API URL</label><input type="text" class="form-input" id="api-url" placeholder="https://api.yourdomain.alwaysdata.net" style="width:320px" oninput="saveApiConfig()"/></div>
+          <div class="form-group"><label>Admin Token</label><input type="password" class="form-input" id="api-token" placeholder="your-secret-token" style="width:220px" oninput="saveApiConfig()"/></div>
+          <button class="add-btn" onclick="testApi()" style="align-self:flex-end">Test</button>
+        </div>
+        <div class="api-status" id="api-status-line" style="display:none">
+          <span class="status-dot" id="api-dot"></span>
+          <span id="api-status-text"></span>
+        </div>
+      </div>
+
+      <!-- Scraper settings (shown after Supabase connect) -->
+      <div id="scraper-settings" style="display:none">
+        <div class="settings-grid">
+          <!-- Lookback hours — General -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-title">General Feed Lookback</div>
+              <div class="settings-card-desc">How far back to scrape for General Cybersec &amp; SG News feeds</div>
+            </div>
+            <div class="settings-card-body">
+              <div class="num-input-row">
+                <button class="num-btn" onclick="adjustNum('lookback-general',-1)">−</button>
+                <input class="num-input" type="number" id="lookback-general" value="24" min="1" max="168"/>
+                <button class="num-btn" onclick="adjustNum('lookback-general',1)">+</button>
+                <span class="num-unit">hours</span>
+              </div>
+            </div>
+          </div>
+          <!-- Lookback hours — Auto -->
+          <div class="settings-card">
+            <div class="settings-card-header">
+              <div class="settings-card-title">Automotive Feed Lookback</div>
+              <div class="settings-card-desc">How far back to scrape for Auto Focused feeds (niche blogs post less often)</div>
+            </div>
+            <div class="settings-card-body">
+              <div class="num-input-row">
+                <button class="num-btn" onclick="adjustNum('lookback-auto',-1)">−</button>
+                <input class="num-input" type="number" id="lookback-auto" value="72" min="1" max="336"/>
+                <button class="num-btn" onclick="adjustNum('lookback-auto',1)">+</button>
+                <span class="num-unit">hours</span>
+              </div>
+            </div>
+          </div>
+          <!-- Filter mode -->
+          <div class="settings-card" style="grid-column:1/-1">
+            <div class="settings-card-header">
+              <div class="settings-card-title">Keyword Filter Mode</div>
+              <div class="settings-card-desc">Controls how strictly articles must match automotive + cybersecurity keywords</div>
+            </div>
+            <div class="settings-card-body">
+              <div class="mode-toggle">
+                <button class="mode-btn active" id="mode-btn-strict" onclick="setMode('strict')">Strict</button>
+                <button class="mode-btn" id="mode-btn-loose" onclick="setMode('loose')">Loose</button>
+              </div>
+              <div class="mode-hint" id="mode-hint">
+                <strong>Strict:</strong> Article must contain an automotive term + a cybersecurity ACTION word (vulnerability, exploit, hack, breach, CVE, etc.). Weak automotive signals (fleet, truck) also require the action in the title. Fewer false positives.
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="save-btn" onclick="saveSettings()" id="save-settings-btn">Save Settings</button>
+      </div>
+
+      <!-- Run Brief section (always shown, disabled until API configured) -->
+      <div class="run-section" style="margin-top:32px">
+        <div class="run-section-header">
+          <div>
+            <div class="run-section-title">Manual Run</div>
+            <div class="run-section-desc">Trigger run_brief.py on the server — sends a brief to Telegram immediately</div>
+          </div>
+        </div>
+        <div class="run-section-body">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button class="run-btn" id="run-now-btn" onclick="runBrief(false)" disabled>
+              <span class="spin-icon" id="run-spin" style="display:none">&#8635;</span>
+              ▶ Run Brief Now
+            </button>
+            <button class="run-btn-clear" id="run-clear-btn" onclick="runBrief(true)" disabled>
+              ↺ Run with DB Clear
+            </button>
+            <div style="font-size:10px;color:var(--muted);line-height:1.6;max-width:220px">"DB Clear" deletes already-sent articles so the bot re-sends them. Use only for testing.</div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div class="run-status-box">
+              <div class="run-status-label">Status</div>
+              <div class="run-status-value" id="run-status-value">Configure API server above to enable</div>
+            </div>
+            <div class="run-output" id="run-output"></div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -331,30 +485,23 @@ const API_BASE=`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}`;
 const RAW_BASE=`https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/`;
 
 function setDot(cls,text){document.getElementById('status-dot').className='status-dot '+cls;document.getElementById('status-text').textContent=text;}
-
 async function refreshAudit(){
   const btn=document.getElementById('refresh-btn');btn.classList.add('spinning');setDot('loading','fetching');showLoading('Listing files in repo');
   try{
     const r=await fetch(`${API_BASE}/git/trees/${GITHUB_BRANCH}?recursive=1`);
-    if(!r.ok) throw new Error(`GitHub API ${r.status} - is the repo public?`);
+    if(!r.ok)throw new Error(`GitHub API ${r.status}`);
     const tree=await r.json();
     const csvFiles=tree.tree.filter(f=>f.type==='blob'&&f.path.endsWith('.csv')&&f.path.includes('audit_')).map(f=>f.path).sort().reverse();
-    if(!csvFiles.length) throw new Error('No audit_*.csv files found yet.\nPush at least one CSV from the server first.');
+    if(!csvFiles.length)throw new Error('No audit_*.csv files found yet.');
     showLoading(`Found ${csvFiles.length} file(s) — loading`);runs={};
     for(const fp of csvFiles){const res=await fetch(RAW_BASE+fp+'?t='+Date.now());if(!res.ok)continue;runs[fp.split('/').pop()]=parseCSV(await res.text());}
     populateRunSelect();setDot('ok','loaded');
   }catch(err){showError(err.message);setDot('err','error');}
   btn.classList.remove('spinning');
 }
-
 function showLoading(sub){document.getElementById('loading-state').style.display='flex';document.getElementById('loading-state').innerHTML=`<div class="loading-spinner"></div><div class="loading-title">Fetching audit logs</div><div class="loading-sub">${escHtml(sub)}</div>`;document.getElementById('dashboard').style.display='none';}
 function showError(msg){document.getElementById('loading-state').style.display='flex';document.getElementById('loading-state').innerHTML=`<div class="loading-title" style="margin-bottom:12px">Failed to load</div><div class="loading-sub">${escHtml(msg)}</div><button class="retry-btn" onclick="refreshAudit()">Retry</button>`;document.getElementById('dashboard').style.display='none';}
-
-function parseCSV(text){
-  const lines=text.trim().split('\n');if(lines.length<2)return[];
-  const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
-  return lines.slice(1).map(line=>{const vals=splitCSVLine(line),obj={};headers.forEach((h,i)=>{obj[h]=(vals[i]||'').trim().replace(/^"|"$/g,'');});return obj;});
-}
+function parseCSV(text){const lines=text.trim().split('\n');if(lines.length<2)return[];const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));return lines.slice(1).map(line=>{const vals=splitCSVLine(line),obj={};headers.forEach((h,i)=>{obj[h]=(vals[i]||'').trim().replace(/^"|"$/g,'');});return obj;});}
 function splitCSVLine(line){const r=[];let cur='',inQ=false;for(const ch of line){if(ch==='"'){inQ=!inQ;continue;}if(ch===','&&!inQ){r.push(cur);cur='';}else cur+=ch;}r.push(cur);return r;}
 function populateRunSelect(){const sel=document.getElementById('run-select');sel.innerHTML='';Object.keys(runs).sort().reverse().forEach(name=>{const o=document.createElement('option');o.value=name;o.textContent=prettyRunName(name);sel.appendChild(o);});switchRun(sel.options[0]?.value);}
 function prettyRunName(f){const m=f.match(/audit_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);if(!m)return f.replace('audit_','').replace('.csv','');const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${m[3]} ${mo[+m[2]-1]} ${m[1]}  ${m[4]}:${m[5]} SGT`;}
@@ -381,12 +528,12 @@ function switchTab(tab,btn){
   document.getElementById('run-label-el').style.display=isAudit?'':'none';
   document.getElementById('run-select').style.display=isAudit?'':'none';
   document.getElementById('refresh-btn').style.display=isAudit?'':'none';
-  if(tab==='keywords'&&sbUrl) initKeywordsTab();
+  if(tab==='keywords'&&sbUrl)initKeywordsTab();
+  if(tab==='settings'&&sbUrl)loadSettingsValues();
 }
 
 // ── SUPABASE SHARED ────────────────────────────────────────────────────
 let sbUrl='',sbKey='',feedsData=[],kwData=[];
-
 async function sbFetch(method,path,body=null){
   const opts={method,headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
   if(body)opts.body=JSON.stringify(body);
@@ -394,7 +541,6 @@ async function sbFetch(method,path,body=null){
   if(!r.ok){const txt=await r.text();throw new Error(`Supabase ${r.status}: ${txt}`);}
   return r.status===204?null:r.json();
 }
-
 function connectSupabase(){
   const url=document.getElementById('sb-url').value.trim(),key=document.getElementById('sb-key').value.trim(),errEl=document.getElementById('sb-error');
   errEl.style.display='none';
@@ -404,130 +550,223 @@ function connectSupabase(){
   sessionStorage.setItem('sb_url',url);sessionStorage.setItem('sb_key',key);
   afterConnect();
 }
-
 function afterConnect(){
-  document.getElementById('feeds-sb-form').style.display='none';
+  // show status
+  const sl=document.getElementById('sb-status-line');
+  sl.style.display='flex';
+  document.getElementById('sb-dot').className='status-dot ok';
+  document.getElementById('sb-status-text').textContent='Connected';
+  // unlock other tabs
   document.getElementById('feeds-sb-note').style.display='none';
   document.getElementById('add-feed-form').style.display='block';
   document.getElementById('kw-sb-note').style.display='none';
   document.getElementById('kw-content').style.display='block';
+  document.getElementById('scraper-settings').style.display='block';
   loadFeeds();
+  loadSettingsValues();
 }
-
 function restoreSession(){
   const url=sessionStorage.getItem('sb_url'),key=sessionStorage.getItem('sb_key');
   if(url&&key){document.getElementById('sb-url').value=url;document.getElementById('sb-key').value=key;sbUrl=url;sbKey=key;afterConnect();}
+  // restore API config from localStorage
+  const apiUrl=localStorage.getItem('api_url'),apiToken=localStorage.getItem('api_token');
+  if(apiUrl){document.getElementById('api-url').value=apiUrl;}
+  if(apiToken){document.getElementById('api-token').value=apiToken;}
+  if(apiUrl||apiToken)updateRunButtons();
 }
 
 // ── FEEDS ──────────────────────────────────────────────────────────────
-const CAT_LABELS={'SG_NEWS':'Singapore News','GENERAL_CYBERSEC':'General Cybersecurity','AUTO_FOCUSED':'Automotive Focused (no filter)','SCRAPE_ONLY_CYBERSEC':'Scrape Only — Cybersec','SCRAPE_ONLY_AUTO':'Scrape Only — Auto'};
+const CAT_LABELS={'SG_NEWS':'Singapore News','GENERAL_CYBERSEC':'General Cybersecurity','AUTO_FOCUSED':'Automotive Focused','SCRAPE_ONLY_CYBERSEC':'Scrape Only — Cybersec','SCRAPE_ONLY_AUTO':'Scrape Only — Auto'};
 const CAT_ORDER=['AUTO_FOCUSED','GENERAL_CYBERSEC','SG_NEWS','SCRAPE_ONLY_CYBERSEC','SCRAPE_ONLY_AUTO'];
-
-async function loadFeeds(){
-  const c=document.getElementById('feeds-content');c.innerHTML='<div class="panel-loading">Loading…</div>';
-  try{feedsData=await sbFetch('GET','feeds?select=*&order=category,label');renderFeeds();}
-  catch(err){c.innerHTML=`<div class="panel-error">${escHtml(err.message)}<button onclick="loadFeeds()">Retry</button></div>`;}
-}
-function renderFeeds(){
-  const c=document.getElementById('feeds-content');if(!feedsData.length){c.innerHTML='<div class="panel-loading">No feeds found. Add your first feed above.</div>';return;}
-  const groups={};CAT_ORDER.forEach(cat=>groups[cat]=[]);feedsData.forEach(f=>{if(groups[f.category])groups[f.category].push(f);else groups['GENERAL_CYBERSEC'].push(f);});
-  c.innerHTML=CAT_ORDER.map(cat=>{const items=groups[cat];if(!items.length)return'';return`<div class="cat-section"><div class="cat-header"><span class="cat-title">${escHtml(CAT_LABELS[cat]||cat)}</span><span class="cat-count">${items.length} feed${items.length!==1?'s':''}</span></div><div class="feed-list">${items.map(feedRow).join('')}</div></div>`;}).join('');
-}
-function feedRow(f){return`<div class="feed-item ${f.active?'':'inactive'}" id="feed-${f.id}"><label class="toggle" title="${f.active?'Disable':'Enable'}"><input type="checkbox" ${f.active?'checked':''} onchange="toggleFeed(${f.id},this.checked)"/><span class="toggle-track"></span></label><span class="feed-url" title="${escHtml(f.url)}">${escHtml(f.url)}</span><input class="feed-label-input" type="text" value="${escHtml(f.label||'')}" placeholder="Add label…" onblur="updateLabel(${f.id},this.value)" onkeydown="if(event.key==='Enter')this.blur()"/><div class="feed-actions"><button class="del-btn" onclick="deleteFeed(${f.id},'${escHtml(f.url).replace(/'/g,"\\'")}')">Remove</button></div></div>`;}
-async function toggleFeed(id,active){try{await sbFetch('PATCH',`feeds?id=eq.${id}`,{active});const el=document.getElementById('feed-'+id);if(el)el.classList.toggle('inactive',!active);const f=feedsData.find(x=>x.id===id);if(f)f.active=active;showToast(active?'Feed enabled':'Feed disabled');}catch(err){showToast('Error: '+err.message,true);}}
+async function loadFeeds(){const c=document.getElementById('feeds-content');c.innerHTML='<div class="panel-loading">Loading…</div>';try{feedsData=await sbFetch('GET','feeds?select=*&order=category,label');renderFeeds();}catch(err){c.innerHTML=`<div class="panel-error">${escHtml(err.message)}<button onclick="loadFeeds()">Retry</button></div>`;}}
+function renderFeeds(){const c=document.getElementById('feeds-content');if(!feedsData.length){c.innerHTML='<div class="panel-loading">No feeds found.</div>';return;}const groups={};CAT_ORDER.forEach(cat=>groups[cat]=[]);feedsData.forEach(f=>{if(groups[f.category])groups[f.category].push(f);else groups['GENERAL_CYBERSEC'].push(f);});c.innerHTML=CAT_ORDER.map(cat=>{const items=groups[cat];if(!items.length)return'';return`<div class="cat-section"><div class="cat-header"><span class="cat-title">${escHtml(CAT_LABELS[cat]||cat)}</span><span class="cat-count">${items.length} feed${items.length!==1?'s':''}</span></div><div class="feed-list">${items.map(feedRow).join('')}</div></div>`;}).join('');}
+function feedRow(f){return`<div class="feed-item ${f.active?'':'inactive'}" id="feed-${f.id}"><label class="toggle"><input type="checkbox" ${f.active?'checked':''} onchange="toggleFeed(${f.id},this.checked)"/><span class="toggle-track"></span></label><span class="feed-url" title="${escHtml(f.url)}">${escHtml(f.url)}</span><input class="feed-label-input" type="text" value="${escHtml(f.label||'')}" placeholder="Add label…" onblur="updateLabel(${f.id},this.value)" onkeydown="if(event.key==='Enter')this.blur()"/><div class="feed-actions"><button class="del-btn" onclick="deleteFeed(${f.id},'${escHtml(f.url).replace(/'/g,"\\'")}')">Remove</button></div></div>`;}
+async function toggleFeed(id,active){try{await sbFetch('PATCH',`feeds?id=eq.${id}`,{active});const el=document.getElementById('feed-'+id);if(el)el.classList.toggle('inactive',!active);showToast(active?'Feed enabled':'Feed disabled');}catch(err){showToast('Error: '+err.message,true);}}
 async function updateLabel(id,label){try{await sbFetch('PATCH',`feeds?id=eq.${id}`,{label:label.trim()||null});showToast('Label saved');}catch(err){showToast('Error: '+err.message,true);}}
-async function deleteFeed(id,url){if(!confirm(`Remove this feed?\n\n${url}`))return;try{await sbFetch('DELETE',`feeds?id=eq.${id}`);feedsData=feedsData.filter(f=>f.id!==id);const el=document.getElementById('feed-'+id);if(el){el.style.opacity='0';el.style.transition='opacity 0.2s';setTimeout(()=>renderFeeds(),250);}showToast('Feed removed');}catch(err){showToast('Error: '+err.message,true);}}
-async function addFeed(){
-  const url=document.getElementById('new-url').value.trim(),category=document.getElementById('new-category').value,label=document.getElementById('new-label').value.trim()||null,errEl=document.getElementById('add-error'),btn=document.getElementById('add-feed-btn');
-  errEl.style.display='none';
-  if(!url){errEl.textContent='URL is required.';errEl.style.display='block';return;}
-  if(!url.startsWith('http')){errEl.textContent='URL must start with http:// or https://';errEl.style.display='block';return;}
-  if(feedsData.some(f=>f.url===url)){errEl.textContent='Already in the list.';errEl.style.display='block';return;}
-  btn.disabled=true;btn.textContent='Adding…';
-  try{const result=await sbFetch('POST','feeds',{url,category,label,active:true});feedsData.push(Array.isArray(result)?result[0]:result);document.getElementById('new-url').value='';document.getElementById('new-label').value='';renderFeeds();showToast('Feed added ✓');}
-  catch(err){errEl.textContent=err.message.includes('duplicate')?'URL already exists.':'Error: '+err.message;errEl.style.display='block';}
-  btn.disabled=false;btn.textContent='+ Add';
-}
+async function deleteFeed(id,url){if(!confirm(`Remove?\n\n${url}`))return;try{await sbFetch('DELETE',`feeds?id=eq.${id}`);feedsData=feedsData.filter(f=>f.id!==id);const el=document.getElementById('feed-'+id);if(el){el.style.opacity='0';el.style.transition='opacity 0.2s';setTimeout(()=>renderFeeds(),250);}showToast('Feed removed');}catch(err){showToast('Error: '+err.message,true);}}
+async function addFeed(){const url=document.getElementById('new-url').value.trim(),category=document.getElementById('new-category').value,label=document.getElementById('new-label').value.trim()||null,errEl=document.getElementById('add-error'),btn=document.getElementById('add-feed-btn');errEl.style.display='none';if(!url){errEl.textContent='URL is required.';errEl.style.display='block';return;}if(!url.startsWith('http')){errEl.textContent='Must start with http://';errEl.style.display='block';return;}if(feedsData.some(f=>f.url===url)){errEl.textContent='Already in the list.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Adding…';try{const result=await sbFetch('POST','feeds',{url,category,label,active:true});feedsData.push(Array.isArray(result)?result[0]:result);document.getElementById('new-url').value='';document.getElementById('new-label').value='';renderFeeds();showToast('Feed added ✓');}catch(err){errEl.textContent=err.message.includes('duplicate')?'URL already exists.':'Error: '+err.message;errEl.style.display='block';}btn.disabled=false;btn.textContent='+ Add';}
 
 // ── KEYWORDS ───────────────────────────────────────────────────────────
 const KW_LISTS=[
-  {name:'STRONG_AUTO_CYBER_PHRASES', label:'Strong Auto-Cyber Phrases',  desc:'Exact phrase match in title/body → article auto-passes the keyword filter regardless of other checks'},
-  {name:'AUTOMOTIVE_KEYWORDS',       label:'Automotive Keywords',         desc:'General automotive terms — must also match a cybersecurity term to pass the filter'},
-  {name:'CYBERSEC_KEYWORDS',         desc:'Cybersecurity terms — paired with an automotive keyword match to pass the filter',         label:'Cybersecurity Keywords'},
-  {name:'SINGAPORE_KEYWORDS',        label:'Singapore Keywords',          desc:'Singapore-specific terms used to flag SG-News feed articles'},
-  {name:'AV_KEYWORDS',               label:'Autonomous Vehicle',          desc:'Autonomous / self-driving specific terms'},
-  {name:'EV_KEYWORDS',               label:'Electric Vehicle',            desc:'Electric vehicle specific terms'},
-  {name:'AUTOMOTIVE_SIGNALS',        label:'Automotive Signals',          desc:'Broader automotive signals used in secondary scoring and classification'},
+  {name:'STRONG_AUTO_CYBER_PHRASES',label:'Strong Auto-Cyber Phrases',desc:'Exact phrase match → auto-passes filter regardless of other checks'},
+  {name:'AUTOMOTIVE_KEYWORDS',label:'Automotive Keywords',desc:'General automotive terms — combined with cybersec check'},
+  {name:'CYBERSEC_KEYWORDS',label:'Cybersecurity Keywords',desc:'Cybersecurity terms — paired with automotive check'},
+  {name:'SINGAPORE_KEYWORDS',label:'Singapore Keywords',desc:'Singapore-specific terms for SG-News feed'},
+  {name:'AV_KEYWORDS',label:'Autonomous Vehicle',desc:'Autonomous / self-driving specific terms'},
+  {name:'EV_KEYWORDS',label:'Electric Vehicle',desc:'Electric vehicle specific terms'},
+  {name:'AUTOMOTIVE_SIGNALS',label:'Automotive Signals',desc:'Broader automotive signals used in secondary scoring'},
 ];
 let kwCurrentList=null,kwFilter='',kwLoaded=false;
+async function initKeywordsTab(){if(kwLoaded)return;kwLoaded=true;await loadKeywords();}
+async function loadKeywords(){document.getElementById('kw-main').innerHTML='<div class="panel-loading">Loading…</div>';try{kwData=await sbFetch('GET','keywords?select=*&order=list_name,keyword');renderKwSidebar();if(!kwCurrentList)selectKwList(KW_LISTS[0].name);}catch(err){document.getElementById('kw-main').innerHTML=`<div class="panel-error">${escHtml(err.message)}<button onclick="kwLoaded=false;initKeywordsTab()">Retry</button></div>`;}}
+function kwCountForList(name){return kwData.filter(k=>k.list_name===name).length;}
+function renderKwSidebar(){document.getElementById('kw-sidebar-list').innerHTML=KW_LISTS.map(l=>`<button class="kw-list-btn${kwCurrentList===l.name?' active':''}" onclick="selectKwList('${l.name}')"><span>${escHtml(l.label)}</span><span class="kw-list-count">${kwCountForList(l.name)}</span></button>`).join('');}
+function selectKwList(name){kwCurrentList=name;kwFilter='';renderKwSidebar();renderKwMain();}
+function renderKwMain(){const meta=KW_LISTS.find(l=>l.name===kwCurrentList);if(!meta)return;const items=kwData.filter(k=>k.list_name===kwCurrentList),filtered=kwFilter?items.filter(k=>k.keyword.toLowerCase().includes(kwFilter.toLowerCase())):items;document.getElementById('kw-main').innerHTML=`<div class="kw-main-header"><div><div class="kw-main-title">${escHtml(meta.label)}</div><div class="kw-main-desc">${escHtml(meta.desc)}</div></div><div class="kw-controls"><input class="kw-search" type="text" placeholder="Filter…" value="${escHtml(kwFilter)}" oninput="kwFilter=this.value;renderKwMain()"/><input class="kw-input" type="text" id="kw-new-input" placeholder="Add keyword or phrase…" onkeydown="if(event.key==='Enter')addKeyword()"/><button class="kw-add-btn" id="kw-add-btn" onclick="addKeyword()">+ Add</button></div></div><div class="kw-chips-area" id="kw-chips">${filtered.length?filtered.map(k=>`<div class="kw-chip" id="kwchip-${k.id}" title="${escHtml(k.keyword)}"><span class="kw-chip-text">${escHtml(k.keyword)}</span><button class="kw-chip-del" onclick="deleteKeyword(${k.id},'${escHtml(k.keyword).replace(/'/g,"\\'")}')">&#215;</button></div>`).join(''):`<div class="kw-empty">${kwFilter?'No keywords match.':'No keywords yet.'}</div>`}</div>`;}
+async function addKeyword(){const input=document.getElementById('kw-new-input');if(!input)return;const kw=input.value.trim().toLowerCase();if(!kw){showToast('Enter a keyword',true);return;}if(kwData.some(k=>k.list_name===kwCurrentList&&k.keyword===kw)){showToast('Already in list',true);return;}const btn=document.getElementById('kw-add-btn');btn.disabled=true;btn.textContent='…';try{const result=await sbFetch('POST','keywords',{list_name:kwCurrentList,keyword:kw,active:true});kwData.push(Array.isArray(result)?result[0]:result);input.value='';renderKwSidebar();renderKwMain();showToast('Keyword added ✓');}catch(err){showToast('Error: '+err.message,true);}if(document.getElementById('kw-add-btn')){document.getElementById('kw-add-btn').disabled=false;document.getElementById('kw-add-btn').textContent='+ Add';}}
+async function deleteKeyword(id,kw){if(!confirm(`Remove?\n\n"${kw}"`))return;try{await sbFetch('DELETE',`keywords?id=eq.${id}`);kwData=kwData.filter(k=>k.id!==id);const chip=document.getElementById('kwchip-'+id);if(chip){chip.style.opacity='0';chip.style.transition='opacity 0.2s';}setTimeout(()=>{renderKwSidebar();renderKwMain();},220);showToast('Keyword removed');}catch(err){showToast('Error: '+err.message,true);}}
 
-async function initKeywordsTab(){
-  if(kwLoaded)return;
-  kwLoaded=true;
-  await loadKeywords();
-}
-async function loadKeywords(){
-  document.getElementById('kw-main').innerHTML='<div class="panel-loading">Loading keywords…</div>';
+// ── SETTINGS ───────────────────────────────────────────────────────────
+let currentMode = 'strict';
+const MODE_HINTS = {
+  strict: '<strong>Strict:</strong> Automotive term + cybersec ACTION word (vulnerability, exploit, hack, breach, CVE…). Fewer false positives. Recommended.',
+  loose:  '<strong>Loose:</strong> Automotive term + any security-related word. Catches more articles but more noise.'
+};
+
+async function loadSettingsValues(){
+  if(!sbUrl) return;
   try{
-    kwData=await sbFetch('GET','keywords?select=*&order=list_name,keyword');
-    renderKwSidebar();
-    if(!kwCurrentList)selectKwList(KW_LISTS[0].name);
+    const rows = await sbFetch('GET','settings?select=key,value');
+    const map = {};
+    (rows||[]).forEach(r=>map[r.key]=r.value);
+    if(map.lookback_hours)     document.getElementById('lookback-general').value = map.lookback_hours;
+    if(map.lookback_hours_auto)document.getElementById('lookback-auto').value    = map.lookback_hours_auto;
+    if(map.filter_mode)        setMode(map.filter_mode, false);
+  }catch(e){ /* silent — settings table may not exist yet */ }
+}
+
+function setMode(mode, save=false){
+  currentMode = mode;
+  document.getElementById('mode-btn-strict').classList.toggle('active', mode==='strict');
+  document.getElementById('mode-btn-loose').classList.toggle('active',  mode==='loose');
+  document.getElementById('mode-hint').innerHTML = MODE_HINTS[mode]||'';
+}
+
+function adjustNum(id, delta){
+  const el=document.getElementById(id);
+  const min=parseInt(el.min||1), max=parseInt(el.max||9999);
+  el.value = Math.min(max, Math.max(min, parseInt(el.value||0)+delta));
+}
+
+async function saveSettings(){
+  const btn=document.getElementById('save-settings-btn');
+  btn.disabled=true;btn.textContent='Saving…';
+  try{
+    const pairs=[
+      {key:'lookback_hours',      value:String(document.getElementById('lookback-general').value)},
+      {key:'lookback_hours_auto', value:String(document.getElementById('lookback-auto').value)},
+      {key:'filter_mode',         value:currentMode},
+    ];
+    for(const p of pairs){
+      await sbFetch('POST','settings',{key:p.key,value:p.value,updated_at:new Date().toISOString()});
+    }
+    showToast('Settings saved ✓');
   }catch(err){
-    document.getElementById('kw-main').innerHTML=`<div class="panel-error">${escHtml(err.message)}<button onclick="kwLoaded=false;initKeywordsTab()">Retry</button></div>`;
+    // UPSERT via POST with Prefer header handles conflicts, but if table doesn't exist:
+    showToast('Error: '+err.message, true);
+  }
+  btn.disabled=false;btn.textContent='Save Settings';
+}
+
+// ── API / RUN BRIEF ────────────────────────────────────────────────────
+let _pollTimer = null;
+
+function saveApiConfig(){
+  const url=document.getElementById('api-url').value.trim();
+  const token=document.getElementById('api-token').value.trim();
+  if(url)  localStorage.setItem('api_url',url);
+  if(token)localStorage.setItem('api_token',token);
+  updateRunButtons();
+}
+
+function updateRunButtons(){
+  const url=document.getElementById('api-url').value.trim();
+  const hasApi=!!url;
+  document.getElementById('run-now-btn').disabled=!hasApi;
+  document.getElementById('run-clear-btn').disabled=!hasApi;
+  if(hasApi) document.getElementById('run-status-value').textContent='Ready';
+}
+
+async function testApi(){
+  const url=document.getElementById('api-url').value.trim();
+  if(!url){showToast('Enter API URL first',true);return;}
+  const sl=document.getElementById('api-status-line');
+  sl.style.display='flex';
+  document.getElementById('api-dot').className='status-dot loading';
+  document.getElementById('api-status-text').textContent='Testing…';
+  try{
+    const r=await fetch(url.replace(/\/$/,'')+'/health',{headers:authHeaders()});
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    const d=await r.json();
+    document.getElementById('api-dot').className='status-dot ok';
+    document.getElementById('api-status-text').textContent=`Connected — server time: ${d.time||'ok'}`;
+    updateRunButtons();
+  }catch(err){
+    document.getElementById('api-dot').className='status-dot err';
+    document.getElementById('api-status-text').textContent='Failed: '+err.message;
   }
 }
-function kwCountForList(name){return kwData.filter(k=>k.list_name===name).length;}
-function renderKwSidebar(){
-  document.getElementById('kw-sidebar-list').innerHTML=KW_LISTS.map(l=>`
-    <button class="kw-list-btn${kwCurrentList===l.name?' active':''}" onclick="selectKwList('${l.name}')">
-      <span>${escHtml(l.label)}</span>
-      <span class="kw-list-count">${kwCountForList(l.name)}</span>
-    </button>`).join('');
+
+function authHeaders(){
+  const token=document.getElementById('api-token').value.trim();
+  const h={'Content-Type':'application/json'};
+  if(token) h['Authorization']='Bearer '+token;
+  return h;
 }
-function selectKwList(name){kwCurrentList=name;kwFilter='';renderKwSidebar();renderKwMain();}
-function renderKwMain(){
-  const meta=KW_LISTS.find(l=>l.name===kwCurrentList);if(!meta)return;
-  const items=kwData.filter(k=>k.list_name===kwCurrentList);
-  const filtered=kwFilter?items.filter(k=>k.keyword.toLowerCase().includes(kwFilter.toLowerCase())):items;
-  document.getElementById('kw-main').innerHTML=`
-    <div class="kw-main-header">
-      <div><div class="kw-main-title">${escHtml(meta.label)}</div><div class="kw-main-desc">${escHtml(meta.desc)}</div></div>
-      <div class="kw-controls">
-        <input class="kw-search" type="text" placeholder="Filter…" value="${escHtml(kwFilter)}" oninput="kwFilter=this.value;renderKwMain()"/>
-        <input class="kw-input" type="text" id="kw-new-input" placeholder="Add keyword or phrase…" onkeydown="if(event.key==='Enter')addKeyword()"/>
-        <button class="kw-add-btn" id="kw-add-btn" onclick="addKeyword()">+ Add</button>
-      </div>
-    </div>
-    <div class="kw-chips-area" id="kw-chips">
-      ${filtered.length?filtered.map(k=>`
-        <div class="kw-chip" id="kwchip-${k.id}" title="${escHtml(k.keyword)}">
-          <span class="kw-chip-text">${escHtml(k.keyword)}</span>
-          <button class="kw-chip-del" onclick="deleteKeyword(${k.id},'${escHtml(k.keyword).replace(/'/g,"\\'")}')">&#215;</button>
-        </div>`).join(''):`<div class="kw-empty">${kwFilter?'No keywords match your filter.':'No keywords yet — add one above.'}</div>`}
-    </div>`;
+
+function apiBase(){
+  return (document.getElementById('api-url').value.trim()).replace(/\/$/,'');
 }
-async function addKeyword(){
-  const input=document.getElementById('kw-new-input');if(!input)return;
-  const kw=input.value.trim().toLowerCase();
-  if(!kw){showToast('Enter a keyword first',true);return;}
-  if(kwData.some(k=>k.list_name===kwCurrentList&&k.keyword===kw)){showToast('Already in this list',true);return;}
-  const btn=document.getElementById('kw-add-btn');btn.disabled=true;btn.textContent='…';
+
+async function runBrief(clearDb){
+  const label = clearDb ? 'Run with DB Clear' : 'Run Brief Now';
+  if(!confirm(clearDb?'This will clear already-sent articles and re-send them. Run anyway?':'Trigger a brief run now?')) return;
+
+  const runBtn=document.getElementById('run-now-btn');
+  const clrBtn=document.getElementById('run-clear-btn');
+  runBtn.disabled=true; clrBtn.disabled=true;
+  runBtn.classList.add('running');
+  setRunStatus('running','Running… this may take a few minutes');
+  document.getElementById('run-output').style.display='none';
+
   try{
-    const result=await sbFetch('POST','keywords',{list_name:kwCurrentList,keyword:kw,active:true});
-    kwData.push(Array.isArray(result)?result[0]:result);
-    input.value='';renderKwSidebar();renderKwMain();showToast('Keyword added ✓');
-  }catch(err){showToast('Error: '+err.message,true);}
-  if(document.getElementById('kw-add-btn')){document.getElementById('kw-add-btn').disabled=false;document.getElementById('kw-add-btn').textContent='+ Add';}
+    const r=await fetch(apiBase()+'/run-brief',{
+      method:'POST',
+      headers:authHeaders(),
+      body:JSON.stringify({clear_db:clearDb}),
+    });
+    if(r.status===409){setRunStatus('err','A run is already in progress');enableRunBtns();return;}
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    // Start polling for status
+    clearTimeout(_pollTimer);
+    _pollTimer = setInterval(pollRunStatus, 3000);
+  }catch(err){
+    setRunStatus('err','Failed to start: '+err.message);
+    enableRunBtns();
+  }
 }
-async function deleteKeyword(id,kw){
-  if(!confirm(`Remove keyword?\n\n"${kw}"`))return;
+
+async function pollRunStatus(){
   try{
-    await sbFetch('DELETE',`keywords?id=eq.${id}`);
-    kwData=kwData.filter(k=>k.id!==id);
-    const chip=document.getElementById('kwchip-'+id);if(chip){chip.style.opacity='0';chip.style.transition='opacity 0.2s';}
-    setTimeout(()=>{renderKwSidebar();renderKwMain();},220);
-    showToast('Keyword removed');
-  }catch(err){showToast('Error: '+err.message,true);}
+    const r=await fetch(apiBase()+'/run-brief/status',{headers:authHeaders()});
+    if(!r.ok) return;
+    const d=await r.json();
+    if(!d.running){
+      clearInterval(_pollTimer);_pollTimer=null;
+      const ok=d.last_status==='success';
+      setRunStatus(ok?'ok':'err', ok?`Completed at ${d.last_end}`:`Failed at ${d.last_end}`);
+      if(d.last_output){
+        const box=document.getElementById('run-output');
+        box.textContent=d.last_output;
+        box.style.display='block';
+      }
+      enableRunBtns();
+      if(ok) showToast('Brief run complete ✓');
+    } else {
+      setRunStatus('running',`Running since ${d.last_start}…`);
+    }
+  }catch(e){}
+}
+
+function setRunStatus(type, msg){
+  const el=document.getElementById('run-status-value');
+  el.className='run-status-value'+(type==='ok'?' ok':type==='err'?' err':type==='running'?' running':'');
+  el.textContent=msg;
+}
+function enableRunBtns(){
+  document.getElementById('run-now-btn').disabled=false;
+  document.getElementById('run-clear-btn').disabled=false;
+  document.getElementById('run-now-btn').classList.remove('running');
 }
 
 // ── TOAST & UTIL ───────────────────────────────────────────────────────
