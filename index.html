@@ -3,232 +3,303 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
     --bg:#ffffff;--surface:#f7f7f7;--surface2:#efefef;
     --border:#e0e0e0;--border2:#c8c8c8;
     --text:#111111;--text2:#444444;--muted:#888888;--muted2:#bbbbbb;
-    --font:'IBM Plex Mono',monospace;--danger:#cc2222;--success:#1a7a3a;
+    --mono:'IBM Plex Mono',monospace;
+    --sans:'IBM Plex Sans',sans-serif;
+    --danger:#cc2222;--success:#1a7a3a;
+    --accent:#2563eb;--accent-light:#eff6ff;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
-  body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh;-webkit-font-smoothing:antialiased;}
-  header{border-bottom:1px solid var(--border);padding:0 36px;height:52px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:100;gap:16px;}
-  .header-right{display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-  .run-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;}
-  .run-select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:6px 28px 6px 10px;cursor:pointer;outline:none;min-width:210px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
-  .refresh-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:6px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;display:flex;align-items:center;gap:6px;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+  /* ── HEADER ── */
+  header{border-bottom:2px solid var(--text);padding:0 36px;height:56px;display:flex;align-items:center;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:100;gap:16px;}
+  .header-brand{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;}
+  .header-brand span{color:var(--muted);font-weight:400;}
+  .header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .run-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-family:var(--mono);}
+  .run-select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:12px;padding:6px 28px 6px 10px;cursor:pointer;outline:none;min-width:210px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
+  .refresh-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--mono);font-size:11px;font-weight:500;padding:6px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;display:flex;align-items:center;gap:6px;}
   .refresh-btn:hover{opacity:0.7;}
   .refresh-btn.spinning .spin-icon{animation:spin 0.8s linear infinite;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .spin-icon{display:inline-block;}
-  .status-indicator{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+  .status-indicator{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;font-family:var(--mono);}
   .status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted2);flex-shrink:0;}
-  .status-dot.ok{background:var(--text);}.status-dot.err{background:var(--muted);}
+  .status-dot.ok{background:#16a34a;}.status-dot.err{background:var(--danger);}
   .status-dot.loading{animation:blink 1s infinite;}
   @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-  .tabs{display:flex;border-bottom:1px solid var(--border);padding:0 36px;background:var(--bg);position:sticky;top:52px;z-index:99;}
-  .tab-btn{font-family:var(--font);font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;padding:12px 16px;cursor:pointer;transition:all 0.15s;margin-bottom:-1px;}
+
+  /* ── TABS ── */
+  .tabs{display:flex;border-bottom:1px solid var(--border);padding:0 36px;background:var(--bg);position:sticky;top:56px;z-index:99;gap:4px;}
+  .tab-btn{font-family:var(--sans);font-size:13px;font-weight:500;color:var(--muted);background:none;border:none;border-bottom:2px solid transparent;padding:14px 18px;cursor:pointer;transition:all 0.15s;margin-bottom:-1px;display:flex;align-items:center;gap:7px;}
   .tab-btn:hover{color:var(--text);}
-  .tab-btn.active{color:var(--text);border-bottom-color:var(--text);font-weight:500;}
+  .tab-btn.active{color:var(--text);border-bottom-color:var(--text);}
+  .tab-btn .tab-icon{font-size:15px;}
   .tab-panel{display:none;}.tab-panel.active{display:block;}
-  #loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 104px);text-align:center;padding:40px;}
-  .loading-spinner{width:24px;height:24px;border:1px solid var(--border2);border-top-color:var(--text);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;}
-  .loading-title{font-size:13px;font-weight:500;margin-bottom:8px;}
-  .loading-sub{font-size:12px;color:var(--muted);line-height:1.8;white-space:pre-line;}
-  .retry-btn{margin-top:20px;background:var(--text);color:var(--bg);border:none;padding:8px 20px;font-family:var(--font);font-size:12px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;}
+
+  /* ── LOADING / ERROR ── */
+  #loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 112px);text-align:center;padding:40px;}
+  .loading-spinner{width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--text);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:20px;}
+  .loading-title{font-size:15px;font-weight:600;margin-bottom:8px;}
+  .loading-sub{font-size:13px;color:var(--muted);line-height:1.8;white-space:pre-line;}
+  .retry-btn{margin-top:20px;background:var(--text);color:var(--bg);border:none;padding:9px 22px;font-family:var(--sans);font-size:13px;cursor:pointer;font-weight:500;}
+
+  /* ── DASHBOARD / AUDIT ── */
   #dashboard{padding:32px 36px;max-width:1400px;margin:0 auto;animation:fadeIn 0.3s ease;}
   @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);margin-bottom:40px;}
-  .stat-card{padding:24px 28px;border-right:1px solid var(--border);}
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);margin-bottom:32px;border-radius:4px;overflow:hidden;}
+  .stat-card{padding:22px 26px;border-right:1px solid var(--border);}
   .stat-card:last-child{border-right:none;}
-  .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;}
-  .stat-value{font-size:40px;font-weight:300;line-height:1;margin-bottom:6px;letter-spacing:-0.02em;}
-  .stat-sub{font-size:11px;color:var(--muted);}
-  .section-label{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:40px;}
+  .stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;font-weight:500;}
+  .stat-value{font-size:38px;font-weight:300;line-height:1;margin-bottom:5px;font-family:var(--mono);}
+  .stat-sub{font-size:12px;color:var(--muted);}
+  .section-label{font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);font-weight:500;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:32px;}
   .funnel-stages{display:flex;flex-direction:column;gap:12px;}
   .funnel-row{display:flex;flex-direction:column;gap:5px;}
-  .funnel-meta{display:flex;justify-content:space-between;font-size:11px;}
-  .funnel-name{color:var(--text2);}.funnel-count{color:var(--muted);font-weight:500;}
+  .funnel-meta{display:flex;justify-content:space-between;font-size:12px;}
+  .funnel-name{color:var(--text2);}.funnel-count{color:var(--muted);font-weight:500;font-family:var(--mono);}
   .funnel-bar-bg{height:3px;background:var(--surface2);}
   .funnel-bar-fill{height:100%;background:var(--text);transition:width 0.7s cubic-bezier(0.25,1,0.5,1);width:0;}
   .funnel-bar-fill.dim{background:var(--muted2);}
   .source-list{display:flex;flex-direction:column;gap:10px;}
   .source-row{display:grid;grid-template-columns:180px 1fr 40px;align-items:center;gap:12px;}
-  .source-name{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .source-name{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .source-bar-bg{height:2px;background:var(--surface2);}
   .source-bar-fill{height:100%;background:var(--text);transition:width 0.7s cubic-bezier(0.25,1,0.5,1);width:0;}
-  .source-count{font-size:11px;color:var(--muted);text-align:right;}
+  .source-count{font-size:12px;color:var(--muted);text-align:right;font-family:var(--mono);}
   .table-section{margin-bottom:40px;}
   .table-toolbar{display:flex;gap:8px;margin-bottom:12px;align-items:center;flex-wrap:wrap;}
-  .search-box{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:7px 12px;outline:none;flex:1;min-width:200px;}
+  .search-box{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:13px;padding:8px 12px;outline:none;flex:1;min-width:200px;border-radius:3px;}
   .search-box::placeholder{color:var(--muted2);}.search-box:focus{border-color:var(--text);}
-  .filter-btn{background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--font);font-size:11px;padding:7px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;transition:all 0.1s;}
+  .filter-btn{background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--sans);font-size:12px;font-weight:500;padding:7px 14px;cursor:pointer;border-radius:3px;transition:all 0.1s;}
   .filter-btn:hover{border-color:var(--text);color:var(--text);}
   .filter-btn.active{background:var(--text);border-color:var(--text);color:var(--bg);}
-  .table-wrap{border:1px solid var(--border);overflow:hidden;}
+  .table-wrap{border:1px solid var(--border);overflow:hidden;border-radius:4px;}
   table{width:100%;border-collapse:collapse;}
-  thead th{background:var(--surface);font-family:var(--font);font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;font-weight:400;}
+  thead th{background:var(--surface);font-family:var(--sans);font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap;font-weight:600;}
   thead th:hover{color:var(--text);}
   tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s;}
   tbody tr:hover{background:var(--surface);}
   tbody tr:last-child{border-bottom:none;}
-  td{padding:10px 14px;font-size:12px;vertical-align:middle;}
-  .badge{display:inline-block;font-size:10px;font-weight:500;padding:2px 7px;text-transform:uppercase;letter-spacing:0.06em;white-space:nowrap;border:1px solid;}
-  .badge-kept{color:var(--text);border-color:var(--text);}
-  .badge-rejected{color:var(--muted);border-color:var(--border2);}
-  .badge-seen{color:var(--muted2);border-color:var(--border);}
-  .reason-tag{display:inline-block;font-size:10px;padding:2px 7px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);white-space:nowrap;}
-  .stage-tag{font-size:10px;color:var(--muted);}
+  td{padding:10px 14px;font-size:13px;vertical-align:middle;}
+  .badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 8px;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap;border-radius:3px;}
+  .badge-kept{background:#dcfce7;color:#166534;}
+  .badge-rejected{background:var(--surface2);color:var(--muted);}
+  .badge-seen{background:var(--surface);color:var(--muted2);border:1px solid var(--border);}
+  .reason-tag{display:inline-block;font-size:11px;padding:2px 7px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:2px;font-family:var(--mono);}
+  .stage-tag{font-size:11px;color:var(--muted);font-family:var(--mono);}
   .title-cell{max-width:320px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .title-cell a{color:var(--text2);text-decoration:none;}
-  .title-cell a:hover{color:var(--text);text-decoration:underline;}
-  .source-tag{font-size:11px;color:var(--muted);white-space:nowrap;}
-  .pub-date{font-size:11px;color:var(--muted);white-space:nowrap;}
+  .title-cell a:hover{color:var(--accent);text-decoration:underline;}
+  .source-tag{font-size:12px;color:var(--muted);}
+  .pub-date{font-size:12px;color:var(--muted);white-space:nowrap;font-family:var(--mono);}
   .pub-date.unknown{color:var(--muted2);font-style:italic;}
   .pagination{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-top:1px solid var(--border);background:var(--surface);}
-  .page-info{font-size:11px;color:var(--muted);}
+  .page-info{font-size:12px;color:var(--muted);font-family:var(--mono);}
   .page-btns{display:flex;gap:4px;}
-  .page-btn{background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--font);font-size:11px;padding:4px 10px;cursor:pointer;transition:all 0.1s;}
+  .page-btn{background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:12px;padding:4px 10px;cursor:pointer;transition:all 0.1s;border-radius:2px;}
   .page-btn:hover:not(:disabled){border-color:var(--text);color:var(--text);}
   .page-btn:disabled{opacity:0.3;cursor:default;}
   .page-btn.current{background:var(--text);border-color:var(--text);color:var(--bg);}
-  .empty-row td{text-align:center;padding:40px;color:var(--muted);font-size:12px;}
-  /* shared panel */
+  .empty-row td{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
+
+  /* ── PANEL SHARED ── */
   .panel-inner{padding:32px 36px;max-width:1100px;margin:0 auto;}
-  .panel-title{font-size:13px;font-weight:600;letter-spacing:0.04em;margin-bottom:4px;}
-  .panel-sub{font-size:11px;color:var(--muted);}
-  .panel-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;flex-wrap:wrap;gap:12px;}
-  .config-note{font-size:11px;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:10px 14px;margin-bottom:24px;line-height:1.7;}
-  .config-note code{background:var(--surface2);padding:1px 5px;font-family:var(--font);}
-  .box-form{border:1px solid var(--border);background:var(--surface);padding:20px 24px;margin-bottom:32px;}
-  .box-form-title{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:16px;}
-  .form-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;}
-  .form-group{display:flex;flex-direction:column;gap:6px;}
-  .form-group label{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);}
-  .form-input{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:8px 12px;outline:none;}
-  .form-input:focus{border-color:var(--text);}
-  .form-input.url-input{width:380px;}
-  .form-select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:8px 28px 8px 12px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;min-width:180px;}
-  .form-select:focus{border-color:var(--text);}
-  .add-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:8px 18px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;white-space:nowrap;align-self:flex-end;transition:opacity 0.15s;}
-  .add-btn:hover{opacity:0.7;}.add-btn:disabled{opacity:0.3;cursor:default;}
-  .form-error{font-size:11px;color:var(--danger);margin-top:8px;display:none;}
-  /* feeds */
-  .cat-section{margin-bottom:32px;}
-  .cat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-  .cat-title{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);}
-  .cat-count{font-size:10px;color:var(--muted2);}
+  .panel-loading{text-align:center;padding:60px 20px;color:var(--muted);font-size:13px;}
+  .panel-error{text-align:center;padding:40px 20px;color:var(--danger);font-size:13px;}
+  .panel-error button{margin-top:12px;background:var(--text);color:var(--bg);border:none;padding:8px 18px;font-family:var(--sans);font-size:12px;cursor:pointer;display:block;margin-left:auto;margin-right:auto;}
+
+  /* ── INFO CALLOUT / EXPLAINER ── */
+  .explainer {
+  background: #000000; /* pure black */
+  border: 1px solid #000000;
+  border-left: 4px solid #000000;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  border-radius: 3px;
+}
+
+.explainer-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff; /* white text */
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.explainer-body {
+  font-size: 13px;
+  color: #ffffff; /* white text */
+  line-height: 1.7;
+}
+
+.explainer-body strong {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.explainer-body ul {
+  margin: 6px 0 0 18px;
+}
+
+.explainer-body li {
+  margin-bottom: 4px;
+  color: #ffffff;
+}
+
+  .warn-callout{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;padding:14px 18px;margin-bottom:20px;border-radius:3px;font-size:13px;color:#78350f;line-height:1.6;}
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin:28px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+  /* ── CONNECT FORM ── */
+  .connect-card{border:1px solid var(--border);padding:22px 24px;margin-bottom:24px;border-radius:4px;background:var(--surface);}
+  .connect-card-title{font-size:13px;font-weight:600;margin-bottom:4px;}
+  .connect-card-desc{font-size:12px;color:var(--muted);margin-bottom:16px;}
+  .form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);}
+  .form-input{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:13px;padding:9px 12px;outline:none;border-radius:3px;}
+  .form-input:focus{border-color:var(--accent);}
+  .form-input.url-input{width:340px;}
+  .form-select{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:13px;padding:9px 28px 9px 12px;outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;min-width:200px;border-radius:3px;}
+  .form-select:focus{border-color:var(--accent);}
+  .add-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 20px;cursor:pointer;border-radius:3px;transition:opacity 0.15s;white-space:nowrap;align-self:flex-end;}
+  .add-btn:hover{opacity:0.75;}.add-btn:disabled{opacity:0.3;cursor:default;}
+  .form-error{font-size:12px;color:var(--danger);margin-top:8px;display:none;}
+  .save-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--sans);font-size:13px;font-weight:600;padding:9px 22px;cursor:pointer;border-radius:3px;transition:opacity 0.15s;margin-top:16px;}
+  .save-btn:hover{opacity:0.75;}.save-btn:disabled{opacity:0.3;cursor:default;}
+  .api-status{font-size:12px;margin-top:10px;display:flex;align-items:center;gap:6px;}
+
+  /* ── FEEDS ── */
+  .cat-section{margin-bottom:28px;}
+  .cat-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+  .cat-title{font-size:14px;font-weight:600;color:var(--text);}
+  .cat-subtitle{font-size:12px;color:var(--muted);margin-top:2px;max-width:560px;line-height:1.5;}
+  .cat-count{font-size:12px;color:var(--muted);white-space:nowrap;margin-top:3px;}
   .feed-list{display:flex;flex-direction:column;gap:1px;}
-  .feed-item{display:grid;grid-template-columns:32px 1fr 160px auto;align-items:center;gap:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);transition:background 0.1s;}
+  .feed-item{display:grid;grid-template-columns:36px 1fr 180px auto;align-items:center;gap:12px;padding:11px 14px;background:var(--bg);border:1px solid var(--border);transition:background 0.1s;border-radius:3px;margin-bottom:2px;}
   .feed-item:hover{background:var(--surface);}
   .feed-item.inactive{opacity:0.45;}
-  .toggle{position:relative;width:28px;height:16px;flex-shrink:0;}
+  .toggle{position:relative;width:32px;height:18px;flex-shrink:0;}
   .toggle input{opacity:0;width:0;height:0;}
-  .toggle-track{position:absolute;inset:0;background:var(--border2);cursor:pointer;transition:background 0.2s;}
-  .toggle-track::after{content:'';position:absolute;width:10px;height:10px;background:white;top:3px;left:3px;transition:transform 0.2s;}
+  .toggle-track{position:absolute;inset:0;background:var(--border2);cursor:pointer;transition:background 0.2s;border-radius:9px;}
+  .toggle-track::after{content:'';position:absolute;width:12px;height:12px;background:white;top:3px;left:3px;transition:transform 0.2s;border-radius:50%;}
   .toggle input:checked+.toggle-track{background:var(--text);}
-  .toggle input:checked+.toggle-track::after{transform:translateX(12px);}
-  .feed-url{font-size:11px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;}
-  .feed-label-input{background:transparent;border:1px solid transparent;color:var(--muted);font-family:var(--font);font-size:11px;padding:3px 6px;outline:none;width:100%;transition:all 0.15s;}
+  .toggle input:checked+.toggle-track::after{transform:translateX(14px);}
+  .feed-url{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;font-family:var(--mono);}
+  .feed-label-input{background:transparent;border:1px solid transparent;color:var(--muted);font-family:var(--sans);font-size:12px;padding:4px 7px;outline:none;width:100%;transition:all 0.15s;border-radius:3px;}
   .feed-label-input:hover{border-color:var(--border2);}
-  .feed-label-input:focus{border-color:var(--text);background:var(--bg);color:var(--text);}
+  .feed-label-input:focus{border-color:var(--accent);background:var(--bg);color:var(--text);}
   .feed-label-input::placeholder{color:var(--muted2);}
   .feed-actions{display:flex;gap:6px;align-items:center;}
-  .del-btn{background:none;border:1px solid transparent;color:var(--muted2);font-family:var(--font);font-size:11px;padding:3px 8px;cursor:pointer;transition:all 0.15s;}
+  .del-btn{background:none;border:1px solid transparent;color:var(--muted2);font-family:var(--sans);font-size:12px;padding:4px 10px;cursor:pointer;transition:all 0.15s;border-radius:3px;}
   .del-btn:hover{border-color:var(--danger);color:var(--danger);}
-  /* keywords */
-  .kw-layout{display:grid;grid-template-columns:240px 1fr;border:1px solid var(--border);}
+
+  /* ── KEYWORDS redesign ── */
+  .kw-layout{display:grid;grid-template-columns:260px 1fr;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
   .kw-sidebar{border-right:1px solid var(--border);background:var(--surface);}
-  .kw-sidebar-title{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:14px 16px 10px;border-bottom:1px solid var(--border);}
-  .kw-list-btn{width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-family:var(--font);font-size:11px;padding:11px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background 0.1s;color:var(--text2);}
+  .kw-sidebar-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:14px 16px 10px;border-bottom:1px solid var(--border);}
+  .kw-list-btn{width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--border);font-family:var(--sans);font-size:13px;padding:12px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:2px;transition:background 0.1s;color:var(--text2);}
   .kw-list-btn:hover{background:var(--surface2);}
-  .kw-list-btn.active{background:var(--bg);color:var(--text);font-weight:500;border-left:2px solid var(--text);padding-left:14px;}
+  .kw-list-btn.active{background:var(--bg);color:var(--text);font-weight:600;border-left:3px solid var(--text);padding-left:13px;}
   .kw-list-btn:last-child{border-bottom:none;}
-  .kw-list-count{font-size:10px;color:var(--muted2);background:var(--surface2);padding:1px 6px;border:1px solid var(--border);}
+  .kw-list-name{font-size:13px;font-weight:500;}
+  .kw-list-btn.active .kw-list-name{font-weight:600;}
+  .kw-list-meta{display:flex;align-items:center;gap:6px;}
+  .kw-list-count{font-size:11px;color:var(--muted);background:var(--surface2);padding:1px 7px;border:1px solid var(--border);border-radius:10px;font-family:var(--mono);}
   .kw-list-btn.active .kw-list-count{color:var(--muted);}
+  .kw-list-desc{font-size:11px;color:var(--muted);line-height:1.4;margin-top:1px;}
   .kw-main{display:flex;flex-direction:column;min-height:400px;}
-  .kw-main-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;background:var(--surface);}
-  .kw-main-title{font-size:12px;font-weight:500;margin-bottom:3px;}
-  .kw-main-desc{font-size:11px;color:var(--muted);line-height:1.5;max-width:400px;}
-  .kw-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0;}
-  .kw-input{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:7px 12px;outline:none;width:240px;}
-  .kw-input:focus{border-color:var(--text);}
+  .kw-main-header{padding:18px 20px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .kw-main-title{font-size:15px;font-weight:600;margin-bottom:4px;}
+  .kw-main-desc{font-size:13px;color:var(--text2);line-height:1.6;max-width:480px;margin-bottom:14px;}
+  .kw-add-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .kw-input{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:13px;padding:8px 12px;outline:none;width:260px;border-radius:3px;}
+  .kw-input:focus{border-color:var(--accent);}
   .kw-input::placeholder{color:var(--muted2);}
-  .kw-search{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--font);font-size:12px;padding:7px 12px;outline:none;width:160px;}
-  .kw-search:focus{border-color:var(--text);}
+  .kw-search{background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--sans);font-size:13px;padding:8px 12px;outline:none;width:160px;border-radius:3px;}
+  .kw-search:focus{border-color:var(--accent);}
   .kw-search::placeholder{color:var(--muted2);}
-  .kw-add-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:7px 14px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;white-space:nowrap;}
-  .kw-add-btn:hover{opacity:0.7;}.kw-add-btn:disabled{opacity:0.3;cursor:default;}
-  .kw-chips-area{padding:20px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;flex:1;}
-  .kw-chip{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);font-family:var(--font);font-size:11px;color:var(--text2);padding:5px 10px;transition:all 0.1s;}
-  .kw-chip:hover{border-color:var(--border2);background:var(--surface2);}
-  .kw-chip-text{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .kw-chip-del{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:15px;line-height:1;padding:0 2px;transition:color 0.1s;flex-shrink:0;font-family:var(--font);}
+  .kw-add-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--sans);font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer;border-radius:3px;transition:opacity 0.15s;white-space:nowrap;}
+  .kw-add-btn:hover{opacity:0.75;}.kw-add-btn:disabled{opacity:0.3;cursor:default;}
+  .kw-chips-area{padding:18px 20px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;flex:1;}
+  .kw-chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);font-family:var(--sans);font-size:13px;color:var(--text2);padding:6px 11px;transition:all 0.1s;border-radius:3px;}
+  .kw-chip:hover{border-color:var(--border2);background:var(--surface);}
+  .kw-chip-text{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .kw-chip-del{background:none;border:none;cursor:pointer;color:var(--muted2);font-size:16px;line-height:1;padding:0 2px;transition:color 0.1s;flex-shrink:0;}
   .kw-chip-del:hover{color:var(--danger);}
-  .kw-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:12px;width:100%;}
-  /* SETTINGS TAB */
-  .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:32px;}
-  .settings-card{border:1px solid var(--border);background:var(--bg);}
-  .settings-card-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface);}
-  .settings-card-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;}
-  .settings-card-desc{font-size:11px;color:var(--muted);}
-  .settings-card-body{padding:20px;}
-  /* Number input with +/- */
+  .kw-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;width:100%;}
+  .kw-filter-row{display:flex;gap:8px;align-items:center;margin-top:10px;}
+
+  /* ── SETTINGS ── */
+  .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+  .settings-card{border:1px solid var(--border);border-radius:4px;overflow:hidden;background:var(--bg);}
+  .settings-card-header{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .settings-card-title{font-size:13px;font-weight:600;margin-bottom:3px;}
+  .settings-card-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+  .settings-card-body{padding:18px;}
   .num-input-row{display:flex;align-items:center;gap:0;}
-  .num-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-family:var(--font);font-size:16px;width:36px;height:38px;cursor:pointer;transition:all 0.1s;display:flex;align-items:center;justify-content:center;user-select:none;}
+  .num-btn{background:var(--surface);border:1px solid var(--border2);color:var(--text2);font-size:16px;width:38px;height:40px;cursor:pointer;transition:all 0.1s;display:flex;align-items:center;justify-content:center;user-select:none;}
   .num-btn:hover{background:var(--surface2);color:var(--text);}
-  .num-input{background:var(--bg);border:1px solid var(--border2);border-left:none;border-right:none;color:var(--text);font-family:var(--font);font-size:14px;font-weight:500;padding:0 16px;height:38px;width:80px;text-align:center;outline:none;-moz-appearance:textfield;}
+  .num-input{background:var(--bg);border:1px solid var(--border2);border-left:none;border-right:none;color:var(--text);font-family:var(--mono);font-size:15px;font-weight:600;padding:0 16px;height:40px;width:84px;text-align:center;outline:none;-moz-appearance:textfield;}
   .num-input::-webkit-inner-spin-button,.num-input::-webkit-outer-spin-button{appearance:none;}
-  .num-input:focus{border-color:var(--text);}
-  .num-unit{font-size:11px;color:var(--muted);margin-left:10px;}
-  /* Filter mode toggle */
-  .mode-toggle{display:flex;border:1px solid var(--border2);overflow:hidden;width:fit-content;}
-  .mode-btn{background:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:9px 20px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);transition:all 0.15s;}
+  .num-input:focus{border-color:var(--accent);}
+  .num-unit{font-size:12px;color:var(--muted);margin-left:10px;}
+  .mode-toggle{display:flex;border:1px solid var(--border2);overflow:hidden;width:fit-content;border-radius:3px;}
+  .mode-btn{background:var(--bg);border:none;font-family:var(--sans);font-size:13px;font-weight:500;padding:9px 22px;cursor:pointer;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);transition:all 0.15s;}
   .mode-btn:hover{color:var(--text);}
   .mode-btn.active{background:var(--text);color:var(--bg);}
-  .mode-hint{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.6;padding:10px 12px;background:var(--surface);border:1px solid var(--border);}
-  /* Run Brief section */
-  .run-section{border:1px solid var(--border);margin-bottom:32px;}
-  .run-section-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-  .run-section-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;}
-  .run-section-desc{font-size:11px;color:var(--muted);margin-top:2px;}
-  .run-section-body{padding:20px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
-  .run-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:12px;font-weight:500;padding:10px 24px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;display:flex;align-items:center;gap:8px;}
+  .mode-hint{font-size:13px;color:var(--text2);margin-top:12px;line-height:1.65;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:3px;}
+
+  /* ── RUN SECTION ── */
+  .run-section{border:1px solid var(--border);margin-bottom:28px;border-radius:4px;overflow:hidden;}
+  .run-section-header{padding:14px 18px;border-bottom:1px solid var(--border);background:var(--surface);}
+  .run-section-title{font-size:13px;font-weight:600;margin-bottom:2px;}
+  .run-section-desc{font-size:12px;color:var(--muted);}
+  .run-section-body{padding:18px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+  .run-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--sans);font-size:13px;font-weight:600;padding:10px 22px;cursor:pointer;border-radius:3px;transition:opacity 0.15s;display:flex;align-items:center;gap:8px;}
   .run-btn:hover{opacity:0.75;}
   .run-btn:disabled{opacity:0.35;cursor:default;}
   .run-btn.running{background:var(--muted);}
-  .run-btn-clear{background:var(--bg);color:var(--text);border:1px solid var(--border2);font-family:var(--font);font-size:12px;font-weight:500;padding:10px 24px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:all 0.15s;}
+  .run-btn-clear{background:var(--bg);color:var(--text);border:1px solid var(--border2);font-family:var(--sans);font-size:13px;font-weight:500;padding:10px 22px;cursor:pointer;border-radius:3px;transition:all 0.15s;}
   .run-btn-clear:hover{border-color:var(--text);}
   .run-btn-clear:disabled{opacity:0.35;cursor:default;}
-  .run-status-box{flex:1;min-width:260px;border:1px solid var(--border);background:var(--surface);padding:14px 16px;font-size:11px;min-height:60px;}
-  .run-status-label{color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;font-size:10px;}
+  .run-status-box{flex:1;min-width:260px;border:1px solid var(--border);background:var(--surface);padding:14px 16px;font-size:13px;min-height:60px;border-radius:3px;}
+  .run-status-label{color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;font-size:11px;font-weight:600;}
   .run-status-value{color:var(--text2);line-height:1.6;}
   .run-status-value.ok{color:var(--success);}
   .run-status-value.err{color:var(--danger);}
   .run-status-value.running{color:var(--muted);animation:blink 1s infinite;}
-  .run-output{margin-top:16px;background:var(--surface2);border:1px solid var(--border);padding:14px 16px;font-size:11px;color:var(--text2);white-space:pre-wrap;max-height:220px;overflow-y:auto;line-height:1.6;display:none;}
-  .save-btn{background:var(--text);color:var(--bg);border:none;font-family:var(--font);font-size:11px;font-weight:500;padding:8px 20px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;transition:opacity 0.15s;margin-top:16px;}
-  .save-btn:hover{opacity:0.7;}.save-btn:disabled{opacity:0.3;cursor:default;}
-  .api-config{border:1px solid var(--border);background:var(--surface);padding:20px 24px;margin-bottom:24px;}
-  .api-config-title{font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:14px;}
-  .api-status{font-size:11px;margin-top:8px;display:flex;align-items:center;gap:6px;}
-  /* generic */
-  .panel-loading{text-align:center;padding:60px 20px;color:var(--muted);font-size:12px;}
-  .panel-error{text-align:center;padding:40px 20px;color:var(--danger);font-size:12px;}
-  .panel-error button{margin-top:12px;background:var(--text);color:var(--bg);border:none;padding:6px 16px;font-family:var(--font);font-size:11px;cursor:pointer;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-left:auto;margin-right:auto;}
-  #toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);font-family:var(--font);font-size:12px;padding:10px 18px;z-index:9999;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;}
+  .run-output{margin-top:14px;background:var(--surface2);border:1px solid var(--border);padding:14px 16px;font-size:12px;color:var(--text2);white-space:pre-wrap;max-height:220px;overflow-y:auto;line-height:1.6;display:none;font-family:var(--mono);border-radius:3px;}
+
+  /* ── LOCKED STATE ── */
+  .lock-notice{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);padding:14px 18px;margin-bottom:20px;border-radius:3px;font-size:13px;color:var(--muted);}
+  .lock-notice .lock-icon{font-size:18px;}
+
+  /* ── TOAST ── */
+  #toast{position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--bg);font-family:var(--sans);font-size:13px;padding:11px 20px;z-index:9999;opacity:0;transform:translateY(8px);transition:all 0.25s;pointer-events:none;border-radius:4px;font-weight:500;}
   #toast.show{opacity:1;transform:translateY(0);}
   #toast.error{background:var(--danger);}
+
+  /* ── RESPONSIVE ── */
   @media(max-width:960px){
-    header{padding:0 18px;}.tabs{padding:0 18px;}.panel-inner,#dashboard{padding:24px 18px;}
+    header{padding:0 18px;}.tabs{padding:0 12px;}.panel-inner,#dashboard{padding:20px 18px;}
     .stats-row{grid-template-columns:1fr 1fr;}
     .stat-card:nth-child(2){border-right:none;}
     .stat-card:nth-child(3),.stat-card:nth-child(4){border-top:1px solid var(--border);}
-    .two-col{grid-template-columns:1fr;gap:24px;}
+    .two-col{grid-template-columns:1fr;gap:20px;}
     .form-input.url-input{width:100%;}
-    .feed-item{grid-template-columns:32px 1fr auto;}
+    .feed-item{grid-template-columns:36px 1fr auto;}
     .feed-label-input{display:none;}
     .col-pub{display:none;}
     .kw-layout{grid-template-columns:1fr;}
@@ -244,6 +315,7 @@
 <body>
 <div id="app">
   <header>
+    <div class="header-brand"><span>Admin</span></div>
     <div class="header-right">
       <div class="status-indicator">
         <span class="status-dot" id="status-dot"></span>
@@ -258,13 +330,13 @@
   </header>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('audit',this)">Audit Log</button>
-    <button class="tab-btn" onclick="switchTab('feeds',this)">Feed Sources</button>
-    <button class="tab-btn" onclick="switchTab('keywords',this)">Keywords</button>
-    <button class="tab-btn" onclick="switchTab('settings',this)">Settings</button>
+    <button class="tab-btn active" onclick="switchTab('audit',this)"><span class="tab-icon"></span> Audit Log</button>
+    <button class="tab-btn" onclick="switchTab('feeds',this)"><span class="tab-icon"></span> News Sources</button>
+    <button class="tab-btn" onclick="switchTab('keywords',this)"><span class="tab-icon"></span> Keywords</button>
+    <button class="tab-btn" onclick="switchTab('settings',this)"><span class="tab-icon"></span> Settings</button>
   </div>
 
-  <!-- AUDIT TAB -->
+  <!-- ══════════════════ AUDIT TAB ══════════════════ -->
   <div id="audit-tab" class="tab-panel active">
     <div id="loading-state">
       <div class="loading-spinner"></div>
@@ -274,13 +346,13 @@
     <div id="dashboard" style="display:none">
       <div class="stats-row" id="stats-row"></div>
       <div class="two-col">
-        <div><div class="section-label">Pipeline Funnel</div><div class="funnel-stages" id="funnel"></div></div>
+        <div><div class="section-label">Pipeline Funnel — Where articles got filtered out</div><div class="funnel-stages" id="funnel"></div></div>
         <div><div class="section-label">Articles by Source</div><div class="source-list" id="source-list"></div></div>
       </div>
       <div class="table-section">
         <div class="section-label">All Articles</div>
         <div class="table-toolbar">
-          <input class="search-box" type="text" id="search" placeholder="Search title, source, reason..." oninput="applyFilters()"/>
+          <input class="search-box" type="text" id="search" placeholder="Search by title, source, or reason…" oninput="applyFilters()"/>
           <button class="filter-btn active" onclick="setStatus('all',this)">All</button>
           <button class="filter-btn" onclick="setStatus('KEPT',this)">Kept</button>
           <button class="filter-btn" onclick="setStatus('REJECTED',this)">Rejected</button>
@@ -289,9 +361,9 @@
         <div class="table-wrap">
           <table>
             <thead><tr>
-              <th onclick="sortBy('status')">Status</th>
-              <th onclick="sortBy('stage')">Stage</th>
-              <th onclick="sortBy('title')">Title</th>
+              <th onclick="sortBy('status')">Result</th>
+              <th onclick="sortBy('stage')">Stopped at</th>
+              <th onclick="sortBy('title')">Article Title</th>
               <th onclick="sortBy('source')">Source</th>
               <th class="col-pub" onclick="sortBy('published_sgt')">Published</th>
               <th onclick="sortBy('reason')">Reason</th>
@@ -304,64 +376,91 @@
     </div>
   </div>
 
-  <!-- FEEDS TAB -->
+  <!-- ══════════════════ FEEDS TAB ══════════════════ -->
   <div id="feeds-tab" class="tab-panel">
     <div class="panel-inner">
-      <div class="panel-header">
-        <div><div class="panel-title">Feed Sources</div><div class="panel-sub">Manage RSS and scrape-only sources.</div></div>
-      </div>
-      <div class="config-note" id="feeds-sb-note">Connect to Supabase — enter credentials on the Settings tab first.</div>
-      <div class="box-form" id="add-feed-form" style="display:none">
-        <div class="box-form-title">Add New Feed</div>
-        <div class="form-row">
-          <div class="form-group"><label>Feed URL</label><input type="text" class="form-input url-input" id="new-url" placeholder="https://example.com/feed.xml"/></div>
-          <div class="form-group"><label>Category</label>
-            <select class="form-select" id="new-category">
-              <option value="GENERAL_CYBERSEC">General Cybersec (filtered)</option>
-              <option value="AUTO_FOCUSED">Auto Focused (filtered)</option>
-              <option value="SG_NEWS">Singapore News (filtered)</option>
-              <option value="SCRAPE_ONLY_CYBERSEC">Scrape Only — Cybersec</option>
-              <option value="SCRAPE_ONLY_AUTO">Scrape Only — Auto</option>
-            </select>
-          </div>
-          <div class="form-group"><label>Label (optional)</label><input type="text" class="form-input" id="new-label" placeholder="e.g. BleepingComputer" style="width:180px"/></div>
-          <button class="add-btn" id="add-feed-btn" onclick="addFeed()">+ Add</button>
+
+      <div class="explainer">
+        <div class="explainer-title">What are News Sources?</div>
+        <div class="explainer-body">
+          These are the RSS feeds (news websites) the bot checks for articles. You can add new ones, remove old ones, or temporarily disable a source without deleting it.<br><br>
+          When adding a source, you choose  what type of website it is this tells the bot how strictly to filter it:
+          <ul>
+            <li><strong>Auto + cyber website</strong> — already focused on automotive cybersecurity. Every article gets sent (no keyword filtering).</li>
+            <li><strong>General cybersecurity website</strong> — broad security news. Bot applies keyword filtering to find automotive-related articles.</li>
+            <li><strong>singapore news website</strong> — local news. Bot looks for singapore-relevant cybersecurity stories.</li>
+          </ul>
         </div>
-        <div class="form-error" id="add-error"></div>
       </div>
+
+      <div id="feeds-lock-notice" class="lock-notice"><span class="lock-icon"></span> Connect to Supabase on the <strong>Settings</strong> tab first to manage sources.</div>
+
+      <div id="add-feed-form" style="display:none">
+        <div class="section-divider">Add a New News Source</div>
+        <div class="connect-card">
+          <div class="form-row">
+            <div class="form-group">
+              <label>RSS Feed URL</label>
+              <input type="text" class="form-input url-input" id="new-url" placeholder="https://example.com/feed.xml"/>
+            </div>
+            <div class="form-group">
+              <label>What type of website is this?</label>
+              <select class="form-select" id="new-category">
+                <option value="AUTO_FOCUSED">Auto + Cyber website (no extra filtering)</option>
+                <option value="GENERAL_CYBERSEC">General cybersecurity website (keyword filtering)</option>
+                <option value="SG_NEWS">Singapore news website (keyword filtering)</option>
+                <option value="SCRAPE_ONLY_CYBERSEC">Scrape-only — Cybersec (no RSS, just web scraping)</option>
+                <option value="SCRAPE_ONLY_AUTO">Scrape-only — Auto (no RSS, just web scraping)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Nickname (optional)</label>
+              <input type="text" class="form-input" id="new-label" placeholder="e.g. BleepingComputer" style="width:180px"/>
+            </div>
+            <button class="add-btn" id="add-feed-btn" onclick="addFeed()">+ Add Source</button>
+          </div>
+          <div class="form-error" id="add-error"></div>
+        </div>
+      </div>
+
       <div id="feeds-content"><div class="panel-loading">Connect to Supabase on the Settings tab first.</div></div>
     </div>
   </div>
 
-  <!-- KEYWORDS TAB -->
+  <!-- ══════════════════ KEYWORDS TAB ══════════════════ -->
   <div id="keywords-tab" class="tab-panel">
     <div class="panel-inner">
-      <div class="panel-header">
-        <div><div class="panel-title">Keyword Filter Lists</div><div class="panel-sub">Add or remove keywords. Changes are live on the next scrape run.</div></div>
+
+      <div class="explainer">
+        <div class="explainer-title">How do keywords work?</div>
+        <div class="explainer-body">
+          When the bot finds a article frm a general cybersecurity website, it checks for keywords to decide if the article is relevant. There are different keyword lists for different purposes, select a list on the left to view and edit it.To add a keyword, just type it and press Enter or click Add.
+        </div>
       </div>
-      <div id="kw-sb-note" class="config-note">Connect to Supabase on the <strong>Settings</strong> tab first.</div>
+
+      <div id="kw-lock-notice" class="lock-notice"><span class="lock-icon"></span> Connect to Supabase on the <strong>Settings</strong> tab first.</div>
+
       <div id="kw-content" style="display:none">
         <div class="kw-layout">
           <div class="kw-sidebar">
-            <div class="kw-sidebar-title">Lists</div>
+            <div class="kw-sidebar-title">Keyword Lists</div>
             <div id="kw-sidebar-list"></div>
           </div>
-          <div class="kw-main" id="kw-main"><div class="panel-loading">Select a list.</div></div>
+          <div class="kw-main" id="kw-main"><div class="panel-loading">Select a list on the left.</div></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SETTINGS TAB -->
+  <!-- ══════════════════ SETTINGS TAB ══════════════════ -->
   <div id="settings-tab" class="tab-panel">
     <div class="panel-inner">
-      <div class="panel-header">
-        <div><div class="panel-title">Settings</div><div class="panel-sub">Supabase connection, scraper settings, and manual run trigger.</div></div>
-      </div>
 
-      <!-- Supabase connection (always shown) -->
-      <div class="box-form" id="sb-connect-form">
-        <div class="box-form-title">Supabase Connection</div>
+      <!-- Supabase connection -->
+      <div class="section-divider" style="margin-top:0">Database Connection</div>
+      <div class="connect-card">
+        <div class="connect-card-title">Connect to Supabase</div>
+        <div class="connect-card-desc">your credentials are stored locally in your browser — they are never sent anywhere except Supabase.</div>
         <div class="form-row">
           <div class="form-group"><label>Supabase URL</label><input type="text" class="form-input" id="sb-url" placeholder="https://xxxx.supabase.co" style="width:280px"/></div>
           <div class="form-group"><label>Anon Key</label><input type="password" class="form-input" id="sb-key" placeholder="eyJ..." style="width:280px"/></div>
@@ -375,10 +474,12 @@
       </div>
 
       <!-- API config -->
-      <div class="api-config" id="api-config-form">
-        <div class="api-config-title">API Server (for Run Brief button)</div>
+      <div class="section-divider">API Server (for triggering runs)</div>
+      <div class="connect-card">
+        <div class="connect-card-title">API Server</div>
+        <div class="connect-card-desc">Needed to use the "Run Brief Now" button below.</div>
         <div class="form-row">
-          <div class="form-group"><label>API URL</label><input type="text" class="form-input" id="api-url" placeholder="https://api.yourdomain.alwaysdata.net" style="width:320px" oninput="saveApiConfig()"/></div>
+          <div class="form-group"><label>API URL</label><input type="text" class="form-input" id="api-url" placeholder="https://whatserver" style="width:320px" oninput="saveApiConfig()"/></div>
           <div class="form-group"><label>Admin Token</label><input type="password" class="form-input" id="api-token" placeholder="your-secret-token" style="width:220px" oninput="saveApiConfig()"/></div>
           <button class="add-btn" onclick="testApi()" style="align-self:flex-end">Test</button>
         </div>
@@ -388,14 +489,15 @@
         </div>
       </div>
 
-      <!-- Scraper settings (shown after Supabase connect) -->
+      <!-- Scraper settings -->
       <div id="scraper-settings" style="display:none">
+        <div class="section-divider">Scraper Settings</div>
+
         <div class="settings-grid">
-          <!-- Lookback hours — General -->
           <div class="settings-card">
             <div class="settings-card-header">
-              <div class="settings-card-title">General Feed Lookback</div>
-              <div class="settings-card-desc">How far back to scrape for General Cybersec &amp; SG News feeds</div>
+              <div class="settings-card-title">How far back to look — General &amp; SG feeds</div>
+              <div class="settings-card-desc">Articles older than this many hours will be ignored. General cybersecurity sites post frequently, so 24 hours is usually enough.</div>
             </div>
             <div class="settings-card-body">
               <div class="num-input-row">
@@ -406,11 +508,11 @@
               </div>
             </div>
           </div>
-          <!-- Lookback hours — Auto -->
+
           <div class="settings-card">
             <div class="settings-card-header">
-              <div class="settings-card-title">Automotive Feed Lookback</div>
-              <div class="settings-card-desc">How far back to scrape for Auto Focused feeds (niche blogs post less often)</div>
+              <div class="settings-card-title">How far back to look — Auto &amp; EV feeds</div>
+              <div class="settings-card-desc">Automotive cybersecurity blogs post less often. Set this higher (e.g. 72 hours) so older posts aren't missed.</div>
             </div>
             <div class="settings-card-body">
               <div class="num-input-row">
@@ -421,11 +523,11 @@
               </div>
             </div>
           </div>
-          <!-- Filter mode -->
+
           <div class="settings-card" style="grid-column:1/-1">
             <div class="settings-card-header">
-              <div class="settings-card-title">Keyword Filter Mode</div>
-              <div class="settings-card-desc">Controls how strictly articles must match automotive + cybersecurity keywords</div>
+              <div class="settings-card-title">Keyword Filter Strictness</div>
+              <div class="settings-card-desc">Controls how aggressively the bot filters general cybersecurity articles.</div>
             </div>
             <div class="settings-card-body">
               <div class="mode-toggle">
@@ -433,21 +535,20 @@
                 <button class="mode-btn" id="mode-btn-loose" onclick="setMode('loose')">Loose</button>
               </div>
               <div class="mode-hint" id="mode-hint">
-                <strong>Strict:</strong> Article must contain an automotive term + a cybersecurity ACTION word (vulnerability, exploit, hack, breach, CVE, etc.). Weak automotive signals (fleet, truck) also require the action in the title. Fewer false positives.
+                <strong>Strict (recommended):</strong> Article must contain an automotive word AND a cybersecurity action word (e.g. "vulnerability", "exploit", "hack", "breach", "CVE"). Fewer false positives — less noise in Telegram.
               </div>
             </div>
           </div>
         </div>
+
         <button class="save-btn" onclick="saveSettings()" id="save-settings-btn">Save Settings</button>
       </div>
 
-      <!-- Run Brief section (always shown, disabled until API configured) -->
-      <div class="run-section" style="margin-top:32px">
+      <!-- Run Brief -->
+      <div class="run-section" style="margin-top:28px">
         <div class="run-section-header">
-          <div>
-            <div class="run-section-title">Manual Run</div>
-            <div class="run-section-desc">Trigger run_brief.py on the server — sends a brief to Telegram immediately</div>
-          </div>
+          <div class="run-section-title">▶ Run Brief Now</div>
+          <div class="run-section-desc">Manually trigger the bot to scrape and send a brief to Telegram immediately, without waiting for the scheduled time.</div>
         </div>
         <div class="run-section-body">
           <div style="display:flex;flex-direction:column;gap:8px">
@@ -456,9 +557,11 @@
               ▶ Run Brief Now
             </button>
             <button class="run-btn-clear" id="run-clear-btn" onclick="runBrief(true)" disabled>
-              ↺ Run with DB Clear
+              ↺ Run + Reset Sent History
             </button>
-            <div style="font-size:10px;color:var(--muted);line-height:1.6;max-width:220px">"DB Clear" deletes already-sent articles so the bot re-sends them. Use only for testing.</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.6;max-width:240px">
+              "Reset Sent History" makes the bot re-send articles it already sent before. <strong>Only use for testing.</strong>
+            </div>
           </div>
           <div style="flex:1;display:flex;flex-direction:column;gap:8px">
             <div class="run-status-box">
@@ -477,7 +580,9 @@
 <div id="toast"></div>
 
 <script>
-// ── AUDIT ──────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// AUDIT
+// ══════════════════════════════════════════════════════════════
 const GITHUB_USER='Minding-crypto',GITHUB_REPO='audit_logs',GITHUB_BRANCH='main';
 let runs={},currentRows=[],filteredRows=[],statusFilter='all',sortCol='status',sortDir=1,page=1;
 const PAGE_SIZE=50;
@@ -507,18 +612,21 @@ function populateRunSelect(){const sel=document.getElementById('run-select');sel
 function prettyRunName(f){const m=f.match(/audit_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);if(!m)return f.replace('audit_','').replace('.csv','');const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${m[3]} ${mo[+m[2]-1]} ${m[1]}  ${m[4]}:${m[5]} SGT`;}
 function switchRun(name){if(!name||!runs[name])return;currentRows=runs[name];page=1;document.getElementById('loading-state').style.display='none';document.getElementById('dashboard').style.display='block';renderAll();}
 function renderAll(){renderStats();renderFunnel();renderSources();applyFilters();}
-function renderStats(){const rows=currentRows,total=rows.length,kept=rows.filter(r=>r.status==='KEPT').length,rejected=rows.filter(r=>r.status==='REJECTED').length,sources=new Set(rows.map(r=>r.source).filter(Boolean)).size,rate=total?Math.round((kept/total)*100):0;document.getElementById('stats-row').innerHTML=`<div class="stat-card"><div class="stat-label">Total Seen</div><div class="stat-value">${total}</div><div class="stat-sub">articles scraped</div></div><div class="stat-card"><div class="stat-label">Kept</div><div class="stat-value">${kept}</div><div class="stat-sub">${rate}% pass rate</div></div><div class="stat-card"><div class="stat-label">Rejected</div><div class="stat-value">${rejected}</div><div class="stat-sub">filtered out</div></div><div class="stat-card"><div class="stat-label">Sources</div><div class="stat-value">${sources}</div><div class="stat-sub">active feeds</div></div>`;}
-function renderFunnel(){const rows=currentRows,total=rows.length||1,stages=[{key:'1_SCRAPER_DATE',label:'Too Old'},{key:'2_SCRAPER_JUNK',label:'Junk / Short'},{key:'3_KEYWORD_FILTER',label:'Keyword Filter'},{key:'4_LLM_FILTER',label:'LLM Filter'},{key:'5_DEDUP',label:'Dedup'},{key:'6_DB_DEDUP',label:'Already Sent'},{key:'7_SUMMARY',label:'No Summary'},{key:'FINAL',label:'Kept',kept:true}],counts={};rows.forEach(r=>{counts[r.stage]=(counts[r.stage]||0)+1;});document.getElementById('funnel').innerHTML=stages.map(s=>{const n=counts[s.key]||0,pct=Math.round((n/total)*100);return`<div class="funnel-row"><div class="funnel-meta"><span class="funnel-name">${s.label}</span><span class="funnel-count">${n}</span></div><div class="funnel-bar-bg"><div class="funnel-bar-fill ${s.kept?'':'dim'}" data-pct="${pct}" style="width:0"></div></div></div>`;}).join('');setTimeout(()=>{document.querySelectorAll('.funnel-bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';});},80);}
+function renderStats(){const rows=currentRows,total=rows.length,kept=rows.filter(r=>r.status==='KEPT').length,rejected=rows.filter(r=>r.status==='REJECTED').length,sources=new Set(rows.map(r=>r.source).filter(Boolean)).size,rate=total?Math.round((kept/total)*100):0;document.getElementById('stats-row').innerHTML=`<div class="stat-card"><div class="stat-label">Total Seen</div><div class="stat-value">${total}</div><div class="stat-sub">articles scraped this run</div></div><div class="stat-card"><div class="stat-label">Sent to Telegram</div><div class="stat-value">${kept}</div><div class="stat-sub">${rate}% pass rate</div></div><div class="stat-card"><div class="stat-label">Filtered Out</div><div class="stat-value">${rejected}</div><div class="stat-sub">not relevant</div></div><div class="stat-card"><div class="stat-label">Sources</div><div class="stat-value">${sources}</div><div class="stat-sub">active feeds</div></div>`;}
+function renderFunnel(){const rows=currentRows,total=rows.length||1,stages=[{key:'1_SCRAPER_DATE',label:'Too old (outside lookback window)'},{key:'2_SCRAPER_JUNK',label:'Junk / too short'},{key:'3_KEYWORD_FILTER',label:'No matching keywords'},{key:'4_LLM_FILTER',label:'AI review: not relevant'},{key:'5_DEDUP',label:'Duplicate (seen this run)'},{key:'6_DB_DEDUP',label:'Already sent before'},{key:'7_SUMMARY',label:'Could not generate summary'},{key:'FINAL',label:'Sent to Telegram',kept:true}],counts={};rows.forEach(r=>{counts[r.stage]=(counts[r.stage]||0)+1;});document.getElementById('funnel').innerHTML=stages.map(s=>{const n=counts[s.key]||0,pct=Math.round((n/total)*100);return`<div class="funnel-row"><div class="funnel-meta"><span class="funnel-name">${s.label}</span><span class="funnel-count">${n}</span></div><div class="funnel-bar-bg"><div class="funnel-bar-fill ${s.kept?'':'dim'}" data-pct="${pct}" style="width:0"></div></div></div>`;}).join('');setTimeout(()=>{document.querySelectorAll('.funnel-bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';});},80);}
 function renderSources(){const counts={};currentRows.forEach(r=>{if(r.source)counts[r.source]=(counts[r.source]||0)+1;});const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,15),max=sorted[0]?.[1]||1;document.getElementById('source-list').innerHTML=sorted.map(([src,n])=>`<div class="source-row"><span class="source-name" title="${escHtml(src)}">${escHtml(src)}</span><div class="source-bar-bg"><div class="source-bar-fill" data-pct="${Math.round((n/max)*100)}" style="width:0"></div></div><span class="source-count">${n}</span></div>`).join('');setTimeout(()=>{document.querySelectorAll('.source-bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';});},120);}
 function setStatus(s,btn){statusFilter=s;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');page=1;applyFilters();}
 function sortBy(col){sortDir=sortCol===col?-sortDir:1;sortCol=col;applyFilters();}
 function applyFilters(){const q=document.getElementById('search').value.toLowerCase();let rows=currentRows;if(statusFilter!=='all')rows=rows.filter(r=>r.status===statusFilter);if(q)rows=rows.filter(r=>(r.title||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q)||(r.reason||'').toLowerCase().includes(q)||(r.stage||'').toLowerCase().includes(q)||(r.published_sgt||'').toLowerCase().includes(q));rows=[...rows].sort((a,b)=>{const av=(a[sortCol]||'').toLowerCase(),bv=(b[sortCol]||'').toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0;});filteredRows=rows;renderTable();}
 function formatPubDate(val){if(!val||val==='Unknown'||val.trim()==='')return null;const m=val.match(/^(\d{2}-\d{2}-\d{4})\s+(\d{2}:\d{2})/);if(m)return`${m[1]}<br><span style="color:var(--muted2)">${m[2]} SGT</span>`;return val;}
-function renderTable(){const start=(page-1)*PAGE_SIZE,slice=filteredRows.slice(start,start+PAGE_SIZE),tbody=document.getElementById('table-body');if(!slice.length){tbody.innerHTML='<tr class="empty-row"><td colspan="6">No articles match.</td></tr>';}else{tbody.innerHTML=slice.map(r=>{const badge=r.status==='KEPT'?'<span class="badge badge-kept">Kept</span>':r.status==='REJECTED'?'<span class="badge badge-rejected">Rejected</span>':'<span class="badge badge-seen">Seen</span>',rs=(r.reason||'').split(':')[0]||'--',pubRaw=r.published_sgt||r.published||'',pubFormatted=formatPubDate(pubRaw),pubCell=pubFormatted?`<td class="pub-date col-pub">${pubFormatted}</td>`:`<td class="pub-date unknown col-pub">unknown</td>`;return`<tr><td>${badge}</td><td><span class="stage-tag">${escHtml(r.stage||'--')}</span></td><td class="title-cell"><a href="${escHtml(r.url||'#')}" target="_blank" title="${escHtml(r.title||'')}">${escHtml(r.title||'--')}</a></td><td><span class="source-tag">${escHtml(r.source||'--')}</span></td>${pubCell}<td><span class="reason-tag">${escHtml(rs)}</span></td></tr>`;}).join('');}renderPagination();}
-function renderPagination(){const total=filteredRows.length,pages=Math.ceil(total/PAGE_SIZE),start=(page-1)*PAGE_SIZE+1,end=Math.min(page*PAGE_SIZE,total),pag=document.getElementById('pagination');if(!total){pag.innerHTML='';return;}let btns='',s=Math.max(1,page-3),e=Math.min(pages,s+6);if(e-s<6)s=Math.max(1,e-6);for(let i=s;i<=e;i++)btns+=`<button class="page-btn${i===page?' current':''}" onclick="goPage(${i})">${i}</button>`;pag.innerHTML=`<span class="page-info">${start}-${end} of ${total}</span><div class="page-btns"><button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>&#8249;</button>${btns}<button class="page-btn" onclick="goPage(${page+1})" ${page===pages?'disabled':''}>&#8250;</button></div>`;}
+function renderTable(){const start=(page-1)*PAGE_SIZE,slice=filteredRows.slice(start,start+PAGE_SIZE),tbody=document.getElementById('table-body');if(!slice.length){tbody.innerHTML='<tr class="empty-row"><td colspan="6">No articles match.</td></tr>';}else{tbody.innerHTML=slice.map(r=>{const badge=r.status==='KEPT'?'<span class="badge badge-kept">Sent ✓</span>':r.status==='REJECTED'?'<span class="badge badge-rejected">Filtered out</span>':'<span class="badge badge-seen">Seen</span>',rs=(r.reason||'').split(':')[0]||'--',pubRaw=r.published_sgt||r.published||'',pubFormatted=formatPubDate(pubRaw),pubCell=pubFormatted?`<td class="pub-date col-pub">${pubFormatted}</td>`:`<td class="pub-date unknown col-pub">unknown</td>`;return`<tr><td>${badge}</td><td><span class="stage-tag">${escHtml(stageLabel(r.stage||''))}</span></td><td class="title-cell"><a href="${escHtml(r.url||'#')}" target="_blank" title="${escHtml(r.title||'')}">${escHtml(r.title||'--')}</a></td><td><span class="source-tag">${escHtml(r.source||'--')}</span></td>${pubCell}<td><span class="reason-tag">${escHtml(rs)}</span></td></tr>`;}).join('');}renderPagination();}
+function stageLabel(s){const map={'1_SCRAPER_DATE':'Too old','2_SCRAPER_JUNK':'Junk','3_KEYWORD_FILTER':'Keywords','4_LLM_FILTER':'AI review','5_DEDUP':'Duplicate','6_DB_DEDUP':'Already sent','7_SUMMARY':'No summary','FINAL':'Sent ✓'};return map[s]||s;}
+function renderPagination(){const total=filteredRows.length,pages=Math.ceil(total/PAGE_SIZE),start=(page-1)*PAGE_SIZE+1,end=Math.min(page*PAGE_SIZE,total),pag=document.getElementById('pagination');if(!total){pag.innerHTML='';return;}let btns='',s=Math.max(1,page-3),e=Math.min(pages,s+6);if(e-s<6)s=Math.max(1,e-6);for(let i=s;i<=e;i++)btns+=`<button class="page-btn${i===page?' current':''}" onclick="goPage(${i})">${i}</button>`;pag.innerHTML=`<span class="page-info">${start}–${end} of ${total}</span><div class="page-btns"><button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>&#8249;</button>${btns}<button class="page-btn" onclick="goPage(${page+1})" ${page===pages?'disabled':''}>&#8250;</button></div>`;}
 function goPage(p){const pages=Math.ceil(filteredRows.length/PAGE_SIZE);if(p<1||p>pages)return;page=p;renderTable();window.scrollTo({top:0,behavior:'smooth'});}
 
-// ── TAB SWITCHING ──────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════════════════════════════
 function switchTab(tab,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
@@ -532,7 +640,9 @@ function switchTab(tab,btn){
   if(tab==='settings'&&sbUrl)loadSettingsValues();
 }
 
-// ── SUPABASE SHARED ────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// SUPABASE
+// ══════════════════════════════════════════════════════════════
 let sbUrl='',sbKey='',feedsData=[],kwData=[];
 async function sbFetch(method,path,body=null){
   const opts={method,headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
@@ -551,16 +661,17 @@ function connectSupabase(){
   afterConnect();
 }
 function afterConnect(){
-  // show status
   const sl=document.getElementById('sb-status-line');
   sl.style.display='flex';
   document.getElementById('sb-dot').className='status-dot ok';
-  document.getElementById('sb-status-text').textContent='Connected';
-  // unlock other tabs
-  document.getElementById('feeds-sb-note').style.display='none';
+  document.getElementById('sb-status-text').textContent='Connected ✓';
+  // unlock feeds
+  document.getElementById('feeds-lock-notice').style.display='none';
   document.getElementById('add-feed-form').style.display='block';
-  document.getElementById('kw-sb-note').style.display='none';
+  // unlock keywords
+  document.getElementById('kw-lock-notice').style.display='none';
   document.getElementById('kw-content').style.display='block';
+  // show scraper settings
   document.getElementById('scraper-settings').style.display='block';
   loadFeeds();
   loadSettingsValues();
@@ -568,213 +679,197 @@ function afterConnect(){
 function restoreSession(){
   const url=sessionStorage.getItem('sb_url'),key=sessionStorage.getItem('sb_key');
   if(url&&key){document.getElementById('sb-url').value=url;document.getElementById('sb-key').value=key;sbUrl=url;sbKey=key;afterConnect();}
-  // restore API config from localStorage
   const apiUrl=localStorage.getItem('api_url'),apiToken=localStorage.getItem('api_token');
-  if(apiUrl){document.getElementById('api-url').value=apiUrl;}
-  if(apiToken){document.getElementById('api-token').value=apiToken;}
+  if(apiUrl)document.getElementById('api-url').value=apiUrl;
+  if(apiToken)document.getElementById('api-token').value=apiToken;
   if(apiUrl||apiToken)updateRunButtons();
 }
 
-// ── FEEDS ──────────────────────────────────────────────────────────────
-const CAT_LABELS={'SG_NEWS':'Singapore News','GENERAL_CYBERSEC':'General Cybersecurity','AUTO_FOCUSED':'Automotive Focused','SCRAPE_ONLY_CYBERSEC':'Scrape Only — Cybersec','SCRAPE_ONLY_AUTO':'Scrape Only — Auto'};
+// ══════════════════════════════════════════════════════════════
+// FEEDS
+// ══════════════════════════════════════════════════════════════
+// Plain-English category labels + descriptions for non-technical users
+const CAT_CONFIG = {
+  'AUTO_FOCUSED':       { label: 'Auto + Cyber Websites',        desc: 'These sites already focus on automotive cybersecurity. Every article is forwarded — no extra filtering needed.' },
+  'GENERAL_CYBERSEC':   { label: 'General Cybersecurity Websites', desc: 'Broad security news sites. The bot applies keyword filtering to find automotive-relevant articles.' },
+  'SG_NEWS':            { label: 'Singapore News Websites',       desc: 'Local Singapore news. The bot looks for cybersecurity stories relevant to Singapore.' },
+  'SCRAPE_ONLY_CYBERSEC':{ label: 'Web Scrape — Cybersecurity',   desc: 'Sites without RSS feeds, scraped directly. Cybersec keyword filtering applied.' },
+  'SCRAPE_ONLY_AUTO':   { label: 'Web Scrape — Automotive',       desc: 'Sites without RSS feeds, scraped directly. No extra filtering — automotive cyber focus assumed.' },
+};
 const CAT_ORDER=['AUTO_FOCUSED','GENERAL_CYBERSEC','SG_NEWS','SCRAPE_ONLY_CYBERSEC','SCRAPE_ONLY_AUTO'];
-async function loadFeeds(){const c=document.getElementById('feeds-content');c.innerHTML='<div class="panel-loading">Loading…</div>';try{feedsData=await sbFetch('GET','feeds?select=*&order=category,label');renderFeeds();}catch(err){c.innerHTML=`<div class="panel-error">${escHtml(err.message)}<button onclick="loadFeeds()">Retry</button></div>`;}}
-function renderFeeds(){const c=document.getElementById('feeds-content');if(!feedsData.length){c.innerHTML='<div class="panel-loading">No feeds found.</div>';return;}const groups={};CAT_ORDER.forEach(cat=>groups[cat]=[]);feedsData.forEach(f=>{if(groups[f.category])groups[f.category].push(f);else groups['GENERAL_CYBERSEC'].push(f);});c.innerHTML=CAT_ORDER.map(cat=>{const items=groups[cat];if(!items.length)return'';return`<div class="cat-section"><div class="cat-header"><span class="cat-title">${escHtml(CAT_LABELS[cat]||cat)}</span><span class="cat-count">${items.length} feed${items.length!==1?'s':''}</span></div><div class="feed-list">${items.map(feedRow).join('')}</div></div>`;}).join('');}
-function feedRow(f){return`<div class="feed-item ${f.active?'':'inactive'}" id="feed-${f.id}"><label class="toggle"><input type="checkbox" ${f.active?'checked':''} onchange="toggleFeed(${f.id},this.checked)"/><span class="toggle-track"></span></label><span class="feed-url" title="${escHtml(f.url)}">${escHtml(f.url)}</span><input class="feed-label-input" type="text" value="${escHtml(f.label||'')}" placeholder="Add label…" onblur="updateLabel(${f.id},this.value)" onkeydown="if(event.key==='Enter')this.blur()"/><div class="feed-actions"><button class="del-btn" onclick="deleteFeed(${f.id},'${escHtml(f.url).replace(/'/g,"\\'")}')">Remove</button></div></div>`;}
-async function toggleFeed(id,active){try{await sbFetch('PATCH',`feeds?id=eq.${id}`,{active});const el=document.getElementById('feed-'+id);if(el)el.classList.toggle('inactive',!active);showToast(active?'Feed enabled':'Feed disabled');}catch(err){showToast('Error: '+err.message,true);}}
-async function updateLabel(id,label){try{await sbFetch('PATCH',`feeds?id=eq.${id}`,{label:label.trim()||null});showToast('Label saved');}catch(err){showToast('Error: '+err.message,true);}}
-async function deleteFeed(id,url){if(!confirm(`Remove?\n\n${url}`))return;try{await sbFetch('DELETE',`feeds?id=eq.${id}`);feedsData=feedsData.filter(f=>f.id!==id);const el=document.getElementById('feed-'+id);if(el){el.style.opacity='0';el.style.transition='opacity 0.2s';setTimeout(()=>renderFeeds(),250);}showToast('Feed removed');}catch(err){showToast('Error: '+err.message,true);}}
-async function addFeed(){const url=document.getElementById('new-url').value.trim(),category=document.getElementById('new-category').value,label=document.getElementById('new-label').value.trim()||null,errEl=document.getElementById('add-error'),btn=document.getElementById('add-feed-btn');errEl.style.display='none';if(!url){errEl.textContent='URL is required.';errEl.style.display='block';return;}if(!url.startsWith('http')){errEl.textContent='Must start with http://';errEl.style.display='block';return;}if(feedsData.some(f=>f.url===url)){errEl.textContent='Already in the list.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Adding…';try{const result=await sbFetch('POST','feeds',{url,category,label,active:true});feedsData.push(Array.isArray(result)?result[0]:result);document.getElementById('new-url').value='';document.getElementById('new-label').value='';renderFeeds();showToast('Feed added ✓');}catch(err){errEl.textContent=err.message.includes('duplicate')?'URL already exists.':'Error: '+err.message;errEl.style.display='block';}btn.disabled=false;btn.textContent='+ Add';}
 
-// ── KEYWORDS ───────────────────────────────────────────────────────────
+async function loadFeeds(){const c=document.getElementById('feeds-content');c.innerHTML='<div class="panel-loading">Loading…</div>';try{feedsData=await sbFetch('GET','feeds?select=*&order=category,label');renderFeeds();}catch(err){c.innerHTML=`<div class="panel-error">${escHtml(err.message)}<button onclick="loadFeeds()">Retry</button></div>`;}}
+function renderFeeds(){
+  const c=document.getElementById('feeds-content');
+  if(!feedsData.length){c.innerHTML='<div class="panel-loading">No feeds found yet. Add one above.</div>';return;}
+  const groups={};CAT_ORDER.forEach(cat=>groups[cat]=[]);
+  feedsData.forEach(f=>{if(groups[f.category])groups[f.category].push(f);else groups['GENERAL_CYBERSEC'].push(f);});
+  c.innerHTML=CAT_ORDER.map(cat=>{
+    const items=groups[cat];if(!items.length)return'';
+    const cfg=CAT_CONFIG[cat]||{label:cat,desc:''};
+    return`<div class="cat-section">
+      <div class="cat-header">
+        <div>
+          <div class="cat-title">${escHtml(cfg.label)}</div>
+          <div class="cat-subtitle">${escHtml(cfg.desc)}</div>
+        </div>
+        <span class="cat-count">${items.length} source${items.length!==1?'s':''}</span>
+      </div>
+      <div class="feed-list">${items.map(feedRow).join('')}</div>
+    </div>`;
+  }).join('');
+}
+function feedRow(f){return`<div class="feed-item ${f.active?'':'inactive'}" id="feed-${f.id}"><label class="toggle" title="${f.active?'Disable':'Enable'} this source"><input type="checkbox" ${f.active?'checked':''} onchange="toggleFeed(${f.id},this.checked)"/><span class="toggle-track"></span></label><span class="feed-url" title="${escHtml(f.url)}">${escHtml(f.url)}</span><input class="feed-label-input" type="text" value="${escHtml(f.label||'')}" placeholder="Add nickname…" onblur="updateLabel(${f.id},this.value)" onkeydown="if(event.key==='Enter')this.blur()"/><div class="feed-actions"><button class="del-btn" onclick="deleteFeed(${f.id},'${escHtml(f.url).replace(/'/g,"\\'")}')">Remove</button></div></div>`;}
+async function toggleFeed(id,active){try{await sbFetch('PATCH',`feeds?id=eq.${id}`,{active});const el=document.getElementById('feed-'+id);if(el)el.classList.toggle('inactive',!active);showToast(active?'Source enabled':'Source disabled');}catch(err){showToast('Error: '+err.message,true);}}
+async function updateLabel(id,label){try{await sbFetch('PATCH',`feeds?id=eq.${id}`,{label:label.trim()||null});showToast('Nickname saved');}catch(err){showToast('Error: '+err.message,true);}}
+async function deleteFeed(id,url){if(!confirm(`Remove this source?\n\n${url}`))return;try{await sbFetch('DELETE',`feeds?id=eq.${id}`);feedsData=feedsData.filter(f=>f.id!==id);const el=document.getElementById('feed-'+id);if(el){el.style.opacity='0';el.style.transition='opacity 0.2s';setTimeout(()=>renderFeeds(),250);}showToast('Source removed');}catch(err){showToast('Error: '+err.message,true);}}
+async function addFeed(){const url=document.getElementById('new-url').value.trim(),category=document.getElementById('new-category').value,label=document.getElementById('new-label').value.trim()||null,errEl=document.getElementById('add-error'),btn=document.getElementById('add-feed-btn');errEl.style.display='none';if(!url){errEl.textContent='URL is required.';errEl.style.display='block';return;}if(!url.startsWith('http')){errEl.textContent='Must start with http://';errEl.style.display='block';return;}if(feedsData.some(f=>f.url===url)){errEl.textContent='Already in the list.';errEl.style.display='block';return;}btn.disabled=true;btn.textContent='Adding…';try{const result=await sbFetch('POST','feeds',{url,category,label,active:true});feedsData.push(Array.isArray(result)?result[0]:result);document.getElementById('new-url').value='';document.getElementById('new-label').value='';renderFeeds();showToast('Source added ✓');}catch(err){errEl.textContent=err.message.includes('duplicate')?'URL already exists.':'Error: '+err.message;errEl.style.display='block';}btn.disabled=false;btn.textContent='+ Add Source';}
+
+// ══════════════════════════════════════════════════════════════
+// KEYWORDS  — plain-English list definitions
+// ══════════════════════════════════════════════════════════════
 const KW_LISTS=[
-  {name:'STRONG_AUTO_CYBER_PHRASES',label:'Strong Auto-Cyber Phrases',desc:'Exact phrase match → auto-passes filter regardless of other checks'},
-  {name:'AUTOMOTIVE_KEYWORDS',label:'Automotive Keywords',desc:'General automotive terms — combined with cybersec check'},
-  {name:'CYBERSEC_KEYWORDS',label:'Cybersecurity Keywords',desc:'Cybersecurity terms — paired with automotive check'},
-  {name:'SINGAPORE_KEYWORDS',label:'Singapore Keywords',desc:'Singapore-specific terms for SG-News feed'},
-  {name:'AV_KEYWORDS',label:'Autonomous Vehicle',desc:'Autonomous / self-driving specific terms'},
-  {name:'EV_KEYWORDS',label:'Electric Vehicle',desc:'Electric vehicle specific terms'},
-  {name:'AUTOMOTIVE_SIGNALS',label:'Automotive Signals',desc:'Broader automotive signals used in secondary scoring'},
+  {
+    name:'STRONG_AUTO_CYBER_PHRASES',
+    label:'Direct Match Phrases',
+    shortDesc:'Auto-pass phrases',
+    desc:'If an article title contains any of these exact phrases, it is automatically sent to Telegram — no further checking needed. Use for very specific automotive cybersecurity phrases that are always relevant (e.g. "vehicle cybersecurity", "ECU vulnerability").',
+  },
+  {
+    name:'AUTOMOTIVE_KEYWORDS',
+    label:'Automotive Words',
+    shortDesc:'Car/vehicle terms',
+    desc:'These are car and vehicle-related words. For articles from general cybersecurity websites, the bot checks if the article contains one of these words AND a cybersecurity word (the keyword list directly below). Both must appear for the article to pass.',
+  },
+  {
+    name:'CYBERSEC_KEYWORDS',
+    label:'Cybersecurity Words',
+    shortDesc:'Security terms',
+    desc:'Cybersecurity-related words. Used together with Automotive Words — an article from a general security site must contain both an automotive word AND one of these to pass the filter.',
+  },
+  {
+    name:'SINGAPORE_KEYWORDS',
+    label:'Singapore Words',
+    shortDesc:'SG-specific terms',
+    desc:'Words used to identify Singapore-relevant articles from Singapore news websites (e.g. "LTA", "SingPass", "MAS", "IDA"). Add local agency names, policies, or location names here.',
+  },
+  {
+    name:'AV_KEYWORDS',
+    label:'Self-Driving / Autonomous Vehicle Words',
+    shortDesc:'AV-specific terms',
+    desc:'Words specific to autonomous and self-driving vehicles (e.g. "ADAS", "autopilot", "lidar", "self-driving"). These supplement the main Automotive Words list.',
+  },
+  {
+    name:'EV_KEYWORDS',
+    label:'Electric Vehicle Words',
+    shortDesc:'EV-specific terms',
+    desc:'Words specific to electric vehicles (e.g. "EV", "Tesla", "charging station", "battery management"). These supplement the main Automotive Words list.',
+  },
+  {
+    name:'AUTOMOTIVE_SIGNALS',
+    label:'Weak Automotive Signals',
+    shortDesc:'Broader vehicle terms',
+    desc:'Broader vehicle-related words (e.g. "fleet", "truck", "driver"). These are weaker signals — in Strict mode, articles that only match these (and not a core automotive word) require a strong cybersecurity action word to pass.',
+  },
 ];
 let kwCurrentList=null,kwFilter='',kwLoaded=false;
 async function initKeywordsTab(){if(kwLoaded)return;kwLoaded=true;await loadKeywords();}
 async function loadKeywords(){document.getElementById('kw-main').innerHTML='<div class="panel-loading">Loading…</div>';try{kwData=await sbFetch('GET','keywords?select=*&order=list_name,keyword');renderKwSidebar();if(!kwCurrentList)selectKwList(KW_LISTS[0].name);}catch(err){document.getElementById('kw-main').innerHTML=`<div class="panel-error">${escHtml(err.message)}<button onclick="kwLoaded=false;initKeywordsTab()">Retry</button></div>`;}}
 function kwCountForList(name){return kwData.filter(k=>k.list_name===name).length;}
-function renderKwSidebar(){document.getElementById('kw-sidebar-list').innerHTML=KW_LISTS.map(l=>`<button class="kw-list-btn${kwCurrentList===l.name?' active':''}" onclick="selectKwList('${l.name}')"><span>${escHtml(l.label)}</span><span class="kw-list-count">${kwCountForList(l.name)}</span></button>`).join('');}
+function renderKwSidebar(){
+  document.getElementById('kw-sidebar-list').innerHTML=KW_LISTS.map(l=>`
+    <button class="kw-list-btn${kwCurrentList===l.name?' active':''}" onclick="selectKwList('${l.name}')">
+      <span class="kw-list-name">${escHtml(l.label)}</span>
+      <div class="kw-list-meta">
+        <span class="kw-list-count">${kwCountForList(l.name)}</span>
+        <span style="font-size:11px;color:var(--muted)">${escHtml(l.shortDesc)}</span>
+      </div>
+    </button>`).join('');
+}
 function selectKwList(name){kwCurrentList=name;kwFilter='';renderKwSidebar();renderKwMain();}
-function renderKwMain(){const meta=KW_LISTS.find(l=>l.name===kwCurrentList);if(!meta)return;const items=kwData.filter(k=>k.list_name===kwCurrentList),filtered=kwFilter?items.filter(k=>k.keyword.toLowerCase().includes(kwFilter.toLowerCase())):items;document.getElementById('kw-main').innerHTML=`<div class="kw-main-header"><div><div class="kw-main-title">${escHtml(meta.label)}</div><div class="kw-main-desc">${escHtml(meta.desc)}</div></div><div class="kw-controls"><input class="kw-search" type="text" placeholder="Filter…" value="${escHtml(kwFilter)}" oninput="kwFilter=this.value;renderKwMain()"/><input class="kw-input" type="text" id="kw-new-input" placeholder="Add keyword or phrase…" onkeydown="if(event.key==='Enter')addKeyword()"/><button class="kw-add-btn" id="kw-add-btn" onclick="addKeyword()">+ Add</button></div></div><div class="kw-chips-area" id="kw-chips">${filtered.length?filtered.map(k=>`<div class="kw-chip" id="kwchip-${k.id}" title="${escHtml(k.keyword)}"><span class="kw-chip-text">${escHtml(k.keyword)}</span><button class="kw-chip-del" onclick="deleteKeyword(${k.id},'${escHtml(k.keyword).replace(/'/g,"\\'")}')">&#215;</button></div>`).join(''):`<div class="kw-empty">${kwFilter?'No keywords match.':'No keywords yet.'}</div>`}</div>`;}
-async function addKeyword(){const input=document.getElementById('kw-new-input');if(!input)return;const kw=input.value.trim().toLowerCase();if(!kw){showToast('Enter a keyword',true);return;}if(kwData.some(k=>k.list_name===kwCurrentList&&k.keyword===kw)){showToast('Already in list',true);return;}const btn=document.getElementById('kw-add-btn');btn.disabled=true;btn.textContent='…';try{const result=await sbFetch('POST','keywords',{list_name:kwCurrentList,keyword:kw,active:true});kwData.push(Array.isArray(result)?result[0]:result);input.value='';renderKwSidebar();renderKwMain();showToast('Keyword added ✓');}catch(err){showToast('Error: '+err.message,true);}if(document.getElementById('kw-add-btn')){document.getElementById('kw-add-btn').disabled=false;document.getElementById('kw-add-btn').textContent='+ Add';}}
-async function deleteKeyword(id,kw){if(!confirm(`Remove?\n\n"${kw}"`))return;try{await sbFetch('DELETE',`keywords?id=eq.${id}`);kwData=kwData.filter(k=>k.id!==id);const chip=document.getElementById('kwchip-'+id);if(chip){chip.style.opacity='0';chip.style.transition='opacity 0.2s';}setTimeout(()=>{renderKwSidebar();renderKwMain();},220);showToast('Keyword removed');}catch(err){showToast('Error: '+err.message,true);}}
+function renderKwMain(){
+  const meta=KW_LISTS.find(l=>l.name===kwCurrentList);if(!meta)return;
+  const items=kwData.filter(k=>k.list_name===kwCurrentList),filtered=kwFilter?items.filter(k=>k.keyword.toLowerCase().includes(kwFilter.toLowerCase())):items;
+  document.getElementById('kw-main').innerHTML=`
+    <div class="kw-main-header">
+      <div class="kw-main-title">${escHtml(meta.label)}</div>
+      <div class="kw-main-desc">${escHtml(meta.desc)}</div>
+      <div class="kw-add-row">
+        <input class="kw-input" type="text" id="kw-new-input" placeholder="Type a keyword or phrase, then press Enter…" onkeydown="if(event.key==='Enter')addKeyword()"/>
+        <button class="kw-add-btn" id="kw-add-btn" onclick="addKeyword()">+ Add</button>
+      </div>
+      <div class="kw-filter-row">
+        <input class="kw-search" type="text" placeholder="Filter this list…" value="${escHtml(kwFilter)}" oninput="kwFilter=this.value;renderKwMain()"/>
+        <span style="font-size:12px;color:var(--muted)">${items.length} keyword${items.length!==1?'s':''}</span>
+      </div>
+    </div>
+    <div class="kw-chips-area" id="kw-chips">
+      ${filtered.length
+        ? filtered.map(k=>`<div class="kw-chip" id="kwchip-${k.id}" title="${escHtml(k.keyword)}"><span class="kw-chip-text">${escHtml(k.keyword)}</span><button class="kw-chip-del" onclick="deleteKeyword(${k.id},'${escHtml(k.keyword).replace(/'/g,"\\'")}')">&#215;</button></div>`).join('')
+        : `<div class="kw-empty">${kwFilter?'No keywords match your search.':'No keywords yet — add one above.'}</div>`
+      }
+    </div>`;
+}
+async function addKeyword(){const input=document.getElementById('kw-new-input');if(!input)return;const kw=input.value.trim().toLowerCase();if(!kw){showToast('Type a keyword first',true);return;}if(kwData.some(k=>k.list_name===kwCurrentList&&k.keyword===kw)){showToast('Already in this list',true);return;}const btn=document.getElementById('kw-add-btn');btn.disabled=true;btn.textContent='…';try{const result=await sbFetch('POST','keywords',{list_name:kwCurrentList,keyword:kw,active:true});kwData.push(Array.isArray(result)?result[0]:result);input.value='';renderKwSidebar();renderKwMain();showToast('Keyword added ✓');}catch(err){showToast('Error: '+err.message,true);}if(document.getElementById('kw-add-btn')){document.getElementById('kw-add-btn').disabled=false;document.getElementById('kw-add-btn').textContent='+ Add';}}
+async function deleteKeyword(id,kw){if(!confirm(`Remove this keyword?\n\n"${kw}"`))return;try{await sbFetch('DELETE',`keywords?id=eq.${id}`);kwData=kwData.filter(k=>k.id!==id);const chip=document.getElementById('kwchip-'+id);if(chip){chip.style.opacity='0';chip.style.transition='opacity 0.2s';}setTimeout(()=>{renderKwSidebar();renderKwMain();},220);showToast('Keyword removed');}catch(err){showToast('Error: '+err.message,true);}}
 
-// ── SETTINGS ───────────────────────────────────────────────────────────
-let currentMode = 'strict';
-const MODE_HINTS = {
-  strict: '<strong>Strict:</strong> Automotive term + cybersec ACTION word (vulnerability, exploit, hack, breach, CVE…). Fewer false positives. Recommended.',
-  loose:  '<strong>Loose:</strong> Automotive term + any security-related word. Catches more articles but more noise.'
+// ══════════════════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════════════════
+let currentMode='strict';
+const MODE_HINTS={
+  strict:'<strong>Strict (recommended):</strong> Article must contain an automotive word AND a strong cybersecurity action word (e.g. "vulnerability", "exploit", "hack", "breach", "CVE"). Fewer false positives — less noise in Telegram.',
+  loose:'<strong>Loose:</strong> Article must contain an automotive word AND any security-related word. Catches more articles but may include more noise.'
 };
-
 async function loadSettingsValues(){
-  if(!sbUrl) return;
+  if(!sbUrl)return;
   try{
-    const rows = await sbFetch('GET','settings?select=key,value');
-    const map = {};
-    (rows||[]).forEach(r=>map[r.key]=r.value);
-    if(map.lookback_hours)     document.getElementById('lookback-general').value = map.lookback_hours;
-    if(map.lookback_hours_auto)document.getElementById('lookback-auto').value    = map.lookback_hours_auto;
-    if(map.filter_mode)        setMode(map.filter_mode, false);
-  }catch(e){ /* silent — settings table may not exist yet */ }
+    const rows=await sbFetch('GET','settings?select=key,value');
+    const map={};(rows||[]).forEach(r=>map[r.key]=r.value);
+    if(map.lookback_hours)document.getElementById('lookback-general').value=map.lookback_hours;
+    if(map.lookback_hours_auto)document.getElementById('lookback-auto').value=map.lookback_hours_auto;
+    if(map.filter_mode)setMode(map.filter_mode,false);
+  }catch(e){}
 }
-
-function setMode(mode, save=false){
-  currentMode = mode;
-  document.getElementById('mode-btn-strict').classList.toggle('active', mode==='strict');
-  document.getElementById('mode-btn-loose').classList.toggle('active',  mode==='loose');
-  document.getElementById('mode-hint').innerHTML = MODE_HINTS[mode]||'';
+function setMode(mode,save=false){
+  currentMode=mode;
+  document.getElementById('mode-btn-strict').classList.toggle('active',mode==='strict');
+  document.getElementById('mode-btn-loose').classList.toggle('active',mode==='loose');
+  document.getElementById('mode-hint').innerHTML=MODE_HINTS[mode]||'';
 }
-
-function adjustNum(id, delta){
-  const el=document.getElementById(id);
-  const min=parseInt(el.min||1), max=parseInt(el.max||9999);
-  el.value = Math.min(max, Math.max(min, parseInt(el.value||0)+delta));
-}
-
+function adjustNum(id,delta){const el=document.getElementById(id);const min=parseInt(el.min||1),max=parseInt(el.max||9999);el.value=Math.min(max,Math.max(min,parseInt(el.value||0)+delta));}
 async function saveSettings(){
-  const btn=document.getElementById('save-settings-btn');
-  btn.disabled=true;btn.textContent='Saving…';
+  const btn=document.getElementById('save-settings-btn');btn.disabled=true;btn.textContent='Saving…';
   try{
-    const pairs=[
-      {key:'lookback_hours',      value:String(document.getElementById('lookback-general').value)},
-      {key:'lookback_hours_auto', value:String(document.getElementById('lookback-auto').value)},
-      {key:'filter_mode',         value:currentMode},
-    ];
-    for(const p of pairs){
-      await sbFetch('POST','settings',{key:p.key,value:p.value,updated_at:new Date().toISOString()});
-    }
+    const pairs=[{key:'lookback_hours',value:String(document.getElementById('lookback-general').value)},{key:'lookback_hours_auto',value:String(document.getElementById('lookback-auto').value)},{key:'filter_mode',value:currentMode}];
+    for(const p of pairs)await sbFetch('POST','settings',{key:p.key,value:p.value,updated_at:new Date().toISOString()});
     showToast('Settings saved ✓');
-  }catch(err){
-    // UPSERT via POST with Prefer header handles conflicts, but if table doesn't exist:
-    showToast('Error: '+err.message, true);
-  }
+  }catch(err){showToast('Error: '+err.message,true);}
   btn.disabled=false;btn.textContent='Save Settings';
 }
 
-// ── API / RUN BRIEF ────────────────────────────────────────────────────
-let _pollTimer = null;
+// ══════════════════════════════════════════════════════════════
+// API / RUN BRIEF
+// ══════════════════════════════════════════════════════════════
+let _pollTimer=null;
+function saveApiConfig(){const url=document.getElementById('api-url').value.trim(),token=document.getElementById('api-token').value.trim();if(url)localStorage.setItem('api_url',url);if(token)localStorage.setItem('api_token',token);updateRunButtons();}
+function updateRunButtons(){const url=document.getElementById('api-url').value.trim(),hasApi=!!url;document.getElementById('run-now-btn').disabled=!hasApi;document.getElementById('run-clear-btn').disabled=!hasApi;if(hasApi)document.getElementById('run-status-value').textContent='Ready';}
+async function testApi(){const url=document.getElementById('api-url').value.trim();if(!url){showToast('Enter API URL first',true);return;}const sl=document.getElementById('api-status-line');sl.style.display='flex';document.getElementById('api-dot').className='status-dot loading';document.getElementById('api-status-text').textContent='Testing…';try{const r=await fetch(url.replace(/\/$/,'')+'/health',{headers:authHeaders()});if(!r.ok)throw new Error(`HTTP ${r.status}`);const d=await r.json();document.getElementById('api-dot').className='status-dot ok';document.getElementById('api-status-text').textContent=`Connected — server time: ${d.time||'ok'}`;updateRunButtons();}catch(err){document.getElementById('api-dot').className='status-dot err';document.getElementById('api-status-text').textContent='Failed: '+err.message;}}
+function authHeaders(){const token=document.getElementById('api-token').value.trim(),h={'Content-Type':'application/json'};if(token)h['Authorization']='Bearer '+token;return h;}
+function apiBase(){return(document.getElementById('api-url').value.trim()).replace(/\/$/,'');}
+async function runBrief(clearDb){if(!confirm(clearDb?'This will reset sent history and re-send articles. Continue?':'Trigger a brief run now?'))return;const runBtn=document.getElementById('run-now-btn'),clrBtn=document.getElementById('run-clear-btn');runBtn.disabled=true;clrBtn.disabled=true;runBtn.classList.add('running');setRunStatus('running','Running… this may take a few minutes');document.getElementById('run-output').style.display='none';try{const r=await fetch(apiBase()+'/run-brief',{method:'POST',headers:authHeaders(),body:JSON.stringify({clear_db:clearDb})});if(r.status===409){setRunStatus('err','A run is already in progress');enableRunBtns();return;}if(!r.ok)throw new Error(`HTTP ${r.status}`);clearTimeout(_pollTimer);_pollTimer=setInterval(pollRunStatus,3000);}catch(err){setRunStatus('err','Failed to start: '+err.message);enableRunBtns();}}
+async function pollRunStatus(){try{const r=await fetch(apiBase()+'/run-brief/status',{headers:authHeaders()});if(!r.ok)return;const d=await r.json();if(!d.running){clearInterval(_pollTimer);_pollTimer=null;const ok=d.last_status==='success';setRunStatus(ok?'ok':'err',ok?`Completed at ${d.last_end}`:`Failed at ${d.last_end}`);if(d.last_output){const box=document.getElementById('run-output');box.textContent=d.last_output;box.style.display='block';}enableRunBtns();if(ok)showToast('Brief run complete ✓');}else{setRunStatus('running',`Running since ${d.last_start}…`);}}catch(e){}}
+function setRunStatus(type,msg){const el=document.getElementById('run-status-value');el.className='run-status-value'+(type==='ok'?' ok':type==='err'?' err':type==='running'?' running':'');el.textContent=msg;}
+function enableRunBtns(){document.getElementById('run-now-btn').disabled=false;document.getElementById('run-clear-btn').disabled=false;document.getElementById('run-now-btn').classList.remove('running');}
 
-function saveApiConfig(){
-  const url=document.getElementById('api-url').value.trim();
-  const token=document.getElementById('api-token').value.trim();
-  if(url)  localStorage.setItem('api_url',url);
-  if(token)localStorage.setItem('api_token',token);
-  updateRunButtons();
-}
-
-function updateRunButtons(){
-  const url=document.getElementById('api-url').value.trim();
-  const hasApi=!!url;
-  document.getElementById('run-now-btn').disabled=!hasApi;
-  document.getElementById('run-clear-btn').disabled=!hasApi;
-  if(hasApi) document.getElementById('run-status-value').textContent='Ready';
-}
-
-async function testApi(){
-  const url=document.getElementById('api-url').value.trim();
-  if(!url){showToast('Enter API URL first',true);return;}
-  const sl=document.getElementById('api-status-line');
-  sl.style.display='flex';
-  document.getElementById('api-dot').className='status-dot loading';
-  document.getElementById('api-status-text').textContent='Testing…';
-  try{
-    const r=await fetch(url.replace(/\/$/,'')+'/health',{headers:authHeaders()});
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    const d=await r.json();
-    document.getElementById('api-dot').className='status-dot ok';
-    document.getElementById('api-status-text').textContent=`Connected — server time: ${d.time||'ok'}`;
-    updateRunButtons();
-  }catch(err){
-    document.getElementById('api-dot').className='status-dot err';
-    document.getElementById('api-status-text').textContent='Failed: '+err.message;
-  }
-}
-
-function authHeaders(){
-  const token=document.getElementById('api-token').value.trim();
-  const h={'Content-Type':'application/json'};
-  if(token) h['Authorization']='Bearer '+token;
-  return h;
-}
-
-function apiBase(){
-  return (document.getElementById('api-url').value.trim()).replace(/\/$/,'');
-}
-
-async function runBrief(clearDb){
-  const label = clearDb ? 'Run with DB Clear' : 'Run Brief Now';
-  if(!confirm(clearDb?'This will clear already-sent articles and re-send them. Run anyway?':'Trigger a brief run now?')) return;
-
-  const runBtn=document.getElementById('run-now-btn');
-  const clrBtn=document.getElementById('run-clear-btn');
-  runBtn.disabled=true; clrBtn.disabled=true;
-  runBtn.classList.add('running');
-  setRunStatus('running','Running… this may take a few minutes');
-  document.getElementById('run-output').style.display='none';
-
-  try{
-    const r=await fetch(apiBase()+'/run-brief',{
-      method:'POST',
-      headers:authHeaders(),
-      body:JSON.stringify({clear_db:clearDb}),
-    });
-    if(r.status===409){setRunStatus('err','A run is already in progress');enableRunBtns();return;}
-    if(!r.ok) throw new Error(`HTTP ${r.status}`);
-    // Start polling for status
-    clearTimeout(_pollTimer);
-    _pollTimer = setInterval(pollRunStatus, 3000);
-  }catch(err){
-    setRunStatus('err','Failed to start: '+err.message);
-    enableRunBtns();
-  }
-}
-
-async function pollRunStatus(){
-  try{
-    const r=await fetch(apiBase()+'/run-brief/status',{headers:authHeaders()});
-    if(!r.ok) return;
-    const d=await r.json();
-    if(!d.running){
-      clearInterval(_pollTimer);_pollTimer=null;
-      const ok=d.last_status==='success';
-      setRunStatus(ok?'ok':'err', ok?`Completed at ${d.last_end}`:`Failed at ${d.last_end}`);
-      if(d.last_output){
-        const box=document.getElementById('run-output');
-        box.textContent=d.last_output;
-        box.style.display='block';
-      }
-      enableRunBtns();
-      if(ok) showToast('Brief run complete ✓');
-    } else {
-      setRunStatus('running',`Running since ${d.last_start}…`);
-    }
-  }catch(e){}
-}
-
-function setRunStatus(type, msg){
-  const el=document.getElementById('run-status-value');
-  el.className='run-status-value'+(type==='ok'?' ok':type==='err'?' err':type==='running'?' running':'');
-  el.textContent=msg;
-}
-function enableRunBtns(){
-  document.getElementById('run-now-btn').disabled=false;
-  document.getElementById('run-clear-btn').disabled=false;
-  document.getElementById('run-now-btn').classList.remove('running');
-}
-
-// ── TOAST & UTIL ───────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════
+// TOAST & UTIL
+// ══════════════════════════════════════════════════════════════
 let _toastTimer;
 function showToast(msg,isError=false){const t=document.getElementById('toast');t.textContent=msg;t.className='show'+(isError?' error':'');clearTimeout(_toastTimer);_toastTimer=setTimeout(()=>{t.className='';},2500);}
 function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ── INIT ───────────────────────────────────────────────────────────────
+
 refreshAudit();
 restoreSession();
 </script>
