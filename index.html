@@ -365,7 +365,7 @@
               <th onclick="sortBy('stage')">Stopped at</th>
               <th onclick="sortBy('title')">Article Title</th>
               <th onclick="sortBy('source')">Source</th>
-              <th class="col-pub" onclick="sortBy('published_sgt')">Published</th>
+              <th class="col-pub" onclick="parseSGTDate('published_sgt')">Published</th>
               <th onclick="sortBy('reason')">Reason</th>
             </tr></thead>
             <tbody id="table-body"></tbody>
@@ -610,11 +610,22 @@ function populateRunSelect(){const sel=document.getElementById('run-select');sel
 function prettyRunName(f){const m=f.match(/audit_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})/);if(!m)return f.replace('audit_','').replace('.csv','');const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return`${m[3]} ${mo[+m[2]-1]} ${m[1]}  ${m[4]}:${m[5]} SGT`;}
 function switchRun(name){if(!name||!runs[name])return;currentRows=runs[name];page=1;document.getElementById('loading-state').style.display='none';document.getElementById('dashboard').style.display='block';renderAll();}
 function renderAll(){renderStats();renderFunnel();renderSources();applyFilters();}
-function renderStats(){const rows=currentRows,total=rows.length,kept=rows.filter(r=>r.status==='KEPT').length,rejected=rows.filter(r=>r.status==='REJECTED').length,sources=new Set(rows.map(r=>r.source).filter(Boolean)).size,rate=total?Math.round((kept/total)*100):0;document.getElementById('stats-row').innerHTML=`<div class="stat-card"><div class="stat-label">Total Seen</div><div class="stat-value">${total}</div><div class="stat-sub">articles scraped this run</div></div><div class="stat-card"><div class="stat-label">Sent to Telegram</div><div class="stat-value">${kept}</div><div class="stat-sub">${rate}% pass rate</div></div><div class="stat-card"><div class="stat-label">Filtered Out</div><div class="stat-value">${rejected}</div><div class="stat-sub">not relevant</div></div><div class="stat-card"><div class="stat-label">Sources</div><div class="stat-value">${sources}</div><div class="stat-sub">active feeds</div></div>`;}
+function renderStats(){const rows=currentRows,total=rows.length,kept=rows.filter(r=>r.status==='KEPT').length,rejected=rows.filter(r=>r.status==='REJECTED').length,sources=new Set(rows.map(r=>r.source).filter(Boolean)).size,rate=total?Math.round((kept/total)*100):0;document.getElementById('stats-row').innerHTML=`<div class="stat-card"><div class="stat-label">Total Seen</div><div class="stat-value">${total}</div><div class="stat-sub">articles encountered (including filtered)</div></div><div class="stat-card"><div class="stat-label">Sent to Telegram</div><div class="stat-value">${kept}</div><div class="stat-sub">${rate}% pass rate</div></div><div class="stat-card"><div class="stat-label">Filtered Out</div><div class="stat-value">${rejected}</div><div class="stat-sub">not relevant</div></div><div class="stat-card"><div class="stat-label">Sources</div><div class="stat-value">${sources}</div><div class="stat-sub">active feeds</div></div>`;}
 function renderFunnel(){const rows=currentRows,total=rows.length||1,stages=[{key:'1_SCRAPER_DATE',label:'Too old (outside lookback window)'},{key:'2_SCRAPER_JUNK',label:'Junk / too short'},{key:'3_KEYWORD_FILTER',label:'No matching keywords'},{key:'4_LLM_FILTER',label:'AI review: not relevant'},{key:'5_DEDUP',label:'Duplicate (seen this run)'},{key:'6_DB_DEDUP',label:'Already sent before'},{key:'7_SUMMARY',label:'Could not generate summary'},{key:'FINAL',label:'Sent to Telegram',kept:true}],counts={};rows.forEach(r=>{counts[r.stage]=(counts[r.stage]||0)+1;});document.getElementById('funnel').innerHTML=stages.map(s=>{const n=counts[s.key]||0,pct=Math.round((n/total)*100);return`<div class="funnel-row"><div class="funnel-meta"><span class="funnel-name">${s.label}</span><span class="funnel-count">${n}</span></div><div class="funnel-bar-bg"><div class="funnel-bar-fill ${s.kept?'':'dim'}" data-pct="${pct}" style="width:0"></div></div></div>`;}).join('');setTimeout(()=>{document.querySelectorAll('.funnel-bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';});},80);}
 function renderSources(){const counts={};currentRows.forEach(r=>{if(r.source)counts[r.source]=(counts[r.source]||0)+1;});const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,15),max=sorted[0]?.[1]||1;document.getElementById('source-list').innerHTML=sorted.map(([src,n])=>`<div class="source-row"><span class="source-name" title="${escHtml(src)}">${escHtml(src)}</span><div class="source-bar-bg"><div class="source-bar-fill" data-pct="${Math.round((n/max)*100)}" style="width:0"></div></div><span class="source-count">${n}</span></div>`).join('');setTimeout(()=>{document.querySelectorAll('.source-bar-fill').forEach(el=>{el.style.width=el.dataset.pct+'%';});},120);}
 function setStatus(s,btn){statusFilter=s;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');page=1;applyFilters();}
+
 function sortBy(col){sortDir=sortCol===col?-sortDir:1;sortCol=col;applyFilters();}
+
+// Replace the sortBy click for published_sgt to parse dates properly
+function parseSGTDate(s) {
+    if (!s || s === 'Unknown') return new Date(0);
+    // format is DD-MM-YYYY HH:MM:SS
+    const m = s.match(/(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})/);
+    if (!m) return new Date(0);
+    return new Date(m[3], m[2]-1, m[1], m[4], m[5]);
+}
+
 function applyFilters(){const q=document.getElementById('search').value.toLowerCase();let rows=currentRows;if(statusFilter!=='all')rows=rows.filter(r=>r.status===statusFilter);if(q)rows=rows.filter(r=>(r.title||'').toLowerCase().includes(q)||(r.source||'').toLowerCase().includes(q)||(r.reason||'').toLowerCase().includes(q)||(r.stage||'').toLowerCase().includes(q)||(r.published_sgt||'').toLowerCase().includes(q));rows=[...rows].sort((a,b)=>{const av=(a[sortCol]||'').toLowerCase(),bv=(b[sortCol]||'').toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0;});filteredRows=rows;renderTable();}
 function formatPubDate(val){if(!val||val==='Unknown'||val.trim()==='')return null;const m=val.match(/^(\d{2}-\d{2}-\d{4})\s+(\d{2}:\d{2})/);if(m)return`${m[1]}<br><span style="color:var(--muted2)">${m[2]} SGT</span>`;return val;}
 function renderTable(){const start=(page-1)*PAGE_SIZE,slice=filteredRows.slice(start,start+PAGE_SIZE),tbody=document.getElementById('table-body');if(!slice.length){tbody.innerHTML='<tr class="empty-row"><td colspan="6">No articles match.</td></tr>';}else{tbody.innerHTML=slice.map(r=>{const badge=r.status==='KEPT'?'<span class="badge badge-kept">Sent ✓</span>':r.status==='REJECTED'?'<span class="badge badge-rejected">Filtered out</span>':'<span class="badge badge-seen">Seen</span>',rs=(r.reason||'').split(':')[0]||'--',pubRaw=r.published_sgt||r.published||'',pubFormatted=formatPubDate(pubRaw),pubCell=pubFormatted?`<td class="pub-date col-pub">${pubFormatted}</td>`:`<td class="pub-date unknown col-pub">unknown</td>`;return`<tr><td>${badge}</td><td><span class="stage-tag">${escHtml(stageLabel(r.stage||''))}</span></td><td class="title-cell"><a href="${escHtml(r.url||'#')}" target="_blank" title="${escHtml(r.title||'')}">${escHtml(r.title||'--')}</a></td><td><span class="source-tag">${escHtml(r.source||'--')}</span></td>${pubCell}<td><span class="reason-tag">${escHtml(rs)}</span></td></tr>`;}).join('');}renderPagination();}
@@ -637,7 +648,7 @@ function switchTab(tab,btn){
 
 let sbUrl='',sbKey='',feedsData=[],kwData=[];
 async function sbFetch(method,path,body=null){
-  const opts={method,headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
+  const opts={method,headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation,resolution=merge-duplicates':''}};
   if(body)opts.body=JSON.stringify(body);
   const r=await fetch(sbUrl+'/rest/v1/'+path,opts);
   if(!r.ok){const txt=await r.text();throw new Error(`Supabase ${r.status}: ${txt}`);}
